@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "121852378484",
+    "project_id": "ridesharingapp-c0e1c",
+    "storage_bucket": "ridesharingapp-c0e1c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121852378484:android:9fe9487cbf27a72f8b0021",
+        "android_client_info": {
+          "package_name": "edu.uga.cs.ridesharingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxEEzkGUBV0YbQ52l9e81JkaxzXDWW0mg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
