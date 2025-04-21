@@ -81,13 +81,13 @@ public class UserActivity extends AppCompatActivity {
                 new CancellationSignal(),
                 Executors.newSingleThreadExecutor(),
                 new CredentialManagerCallback<>() {
-                        @Override
-                        public void onResult(@NonNull Void result) {
-                            Log.d("Logout", "Logout status succeeded");
-                        }
-
+                    @Override
+                    public void onResult(@NonNull Void result) {
+                        Log.d("Logout", "Logout status succeeded");
+                    }
+                    @Override
                     public void onError(@NonNull ClearCredentialException e) {
-                        Log.d("Logout", "Logot failed for some reason");
+                        Log.d("Logout", "Logout failed for some reason");
                     }
                 });
     }

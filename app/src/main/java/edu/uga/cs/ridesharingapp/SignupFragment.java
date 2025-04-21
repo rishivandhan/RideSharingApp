@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -128,11 +129,16 @@ public class SignupFragment extends Fragment {
 
 
                                 } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.d("Account Creation", "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(getActivity(), "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Exception exception = task.getException();
+                                    if (exception instanceof FirebaseAuthUserCollisionException) {
+                                        // Email already in use
+                                        Toast.makeText(getActivity(), "This email is already registered.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Some other error
+                                        Toast.makeText(getActivity(), "Authentication failed: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
 
+                                    Log.e("Account Creation", "createUserWithEmail:failure", exception);
                                 }
                             }
                         });
