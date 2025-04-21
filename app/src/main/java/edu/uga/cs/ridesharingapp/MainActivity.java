@@ -1,6 +1,8 @@
 package edu.uga.cs.ridesharingapp;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +22,34 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        Button SignupButton = findViewById(R.id.MainRegisterButton);
+        Button LoginButton = findViewById(R.id.MainLoginButton);
+
+
+        SignupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SignupFragment signup = SignupFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.accountFragment, signup).commit();
+
+            }
+        });
+
+        LoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginFragment login = LoginFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.accountFragment, login).commit();
+            }
+        });
+
+
+
+
+
+
     }
 }
