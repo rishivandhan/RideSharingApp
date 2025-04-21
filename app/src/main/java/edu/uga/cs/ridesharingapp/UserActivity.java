@@ -1,24 +1,32 @@
 package edu.uga.cs.ridesharingapp;
 
 import android.content.Intent;
+import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.credentials.ClearCredentialStateRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.ClearCredentialException;
+import com.google.firebase.auth.FirebaseAuth;
 
-import edu.uga.cs.ridesharingapp.SignupFragment;
-
-
-import com.firebase.ui.auth.data.model.User;
-
-import org.w3c.dom.Text;
+import java.util.concurrent.Executors;
 
 public class UserActivity extends AppCompatActivity {
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private CredentialManager credentialManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +44,53 @@ public class UserActivity extends AppCompatActivity {
         });
 
         TextView textView = findViewById( R.id.userID );
-        Intent intent = getIntent();
+        Button LogoutButton = findViewById(R.id.LogoutButton);
 
+
+        Intent intent = getIntent();
+        credentialManager = CredentialManager.create(this);
 
         String UserId = intent.getStringExtra(LoginFragment.MESSAGE_TYPE);
+        if(UserId == null){
+            Log.d("Failed Credentials", "please sign in");
+        }
         Log.d("Signed in user", "Current signed in user is: " + UserId);
         textView.setText(UserId);
 
+
+        LogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+                Log.d("sign out Success", "Signed Out Successfully");
+                Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
+
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // When a user signs out, clear the current user credential state from all credential providers.
+        ClearCredentialStateRequest clearRequest = new ClearCredentialStateRequest();
+        credentialManager.clearCredentialStateAsync(
+                clearRequest,
+                new CancellationSignal(),
+                Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<>() {
+                        @Override
+                        public void onResult(@NonNull Void result) {
+                            Log.d("Logout", "Logout status succeeded");
+                        }
+
+                    public void onError(@NonNull ClearCredentialException e) {
+                        Log.d("Logout", "Logot failed for some reason");
+                    }
+                });
+    }
+
+
 }
