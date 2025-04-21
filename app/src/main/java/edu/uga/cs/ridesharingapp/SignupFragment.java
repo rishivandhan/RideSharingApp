@@ -1,12 +1,31 @@
 package edu.uga.cs.ridesharingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.firebase.ui.auth.data.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,6 +72,7 @@ public class SignupFragment extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -60,5 +80,68 @@ public class SignupFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_signup, container, false);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //backend control for login credentials must be added here
+
+        EditText EmailEditText = view.findViewById(R.id.SignupEmail);
+        EditText PasswordEditText = view.findViewById(R.id.pswdedit);
+        EditText PasswordRetypeEditText = view.findViewById(R.id.pswdRetype);
+        Button SignupButton = view.findViewById(R.id.SignupButton);
+
+        SignupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String email = EmailEditText.getText().toString();
+                String Password = PasswordEditText.getText().toString();
+                String RetypePassword = PasswordRetypeEditText.getText().toString();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+                if(email.isEmpty() || Password.isEmpty() || RetypePassword.isEmpty()){
+                    Toast.makeText(getActivity(), "Please fill all of the fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(!Password.equals(RetypePassword)){
+                    Toast.makeText(getActivity(),"passwords do not match", Toast.LENGTH_SHORT).show();
+                }
+
+                mAuth.createUserWithEmailAndPassword(email, Password)
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("Account Creation", "Account Created Successfully");
+                                    Toast.makeText(getActivity(), "Account Created Successfully", Toast.LENGTH_SHORT).show();
+                                    FirebaseUser user = mAuth.getCurrentUser();
+
+//                                    Intent intent = new Intent(getActivity(), UserActivity.class);
+//                                    intent.putExtra("CurrentUser", user);
+//                                    startActivity(intent);
+
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.d("Account Creation", "createUserWithEmail:failure", task.getException());
+                                    Toast.makeText(getActivity(), "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        });
+            }
+        });
+
+
+
+
+
     }
 }

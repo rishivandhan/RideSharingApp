@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Button SignupButton = findViewById(R.id.MainRegisterButton);
-        Button LoginButton = findViewById(R.id.MainLoginButton);
+        Button SignupFragmentSpawn = findViewById(R.id.MainRegisterButton);
+        Button LoginFragmentSpawn  = findViewById(R.id.MainLoginButton);
 
 
-        SignupButton.setOnClickListener(new View.OnClickListener() {
+        SignupFragmentSpawn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LoginButton.setOnClickListener(new View.OnClickListener() {
+        LoginFragmentSpawn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LoginFragment login = LoginFragment.newInstance();

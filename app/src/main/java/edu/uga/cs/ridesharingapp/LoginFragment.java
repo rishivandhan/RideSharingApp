@@ -1,12 +1,27 @@
 package edu.uga.cs.ridesharingapp;
 
+import static android.provider.Telephony.BaseMmsColumns.MESSAGE_TYPE;
+
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,14 +30,8 @@ import android.view.ViewGroup;
  */
 public class LoginFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
+    public static final String MESSAGE_TYPE = "edu.uga.cs.ridesharingapp.MESSAGE_TYPE";
 
-    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -60,5 +69,68 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
+
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+
+
+        EditText login = view.findViewById(R.id.LoginEmail);
+        EditText password = view.findViewById(R.id.LoginPassword);
+        Button LoginButton = view.findViewById(R.id.LoginButton);
+
+
+
+        LoginButton.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View view) {
+                String Login = login.getText().toString();
+                String Password = password.getText().toString();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+
+                mAuth.signInWithEmailAndPassword(Login, Password)
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                   Log.d("Login Creation", "Login Success");
+                                   Toast.makeText(getActivity(), "Login Success.", Toast.LENGTH_SHORT).show();
+                                   FirebaseUser user = mAuth.getCurrentUser();
+
+
+                                    //start activity with the logged in user
+                                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                                    String CurrentUser = user.getEmail().toString();
+                                    intent.putExtra(MESSAGE_TYPE, CurrentUser);
+                                    startActivity(intent);
+
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.d("Account Creation", "createUserWithEmail:failure", task.getException());
+                                    Toast.makeText(getActivity(), "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        });
+
+                //backend control for login credentials must be added here
+//                Intent intent = new Intent(getActivity(), UserActivity.class);
+//                startActivity(intent);
+
+
+            }
+        });
+
     }
 }
