@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "121852378484",
+    "firebase_url": "https://ridesharingapp-c0e1c-default-rtdb.firebaseio.com",
     "project_id": "ridesharingapp-c0e1c",
     "storage_bucket": "ridesharingapp-c0e1c.firebasestorage.app"
   },
