@@ -1,7 +1,6 @@
 package edu.uga.cs.ridesharingapp;
 
 import android.content.Intent;
-import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Log;
@@ -19,6 +18,7 @@ import androidx.credentials.ClearCredentialStateRequest;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.exceptions.ClearCredentialException;
+
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.concurrent.Executors;
@@ -46,7 +46,7 @@ public class UserActivity extends AppCompatActivity {
         TextView textView = findViewById( R.id.userID );
         Button LogoutButton = findViewById(R.id.LogoutButton);
         Button DriverButton = findViewById(R.id.DriverButton);
-        Button RiderButton = findViewById(R.id.DriverButton);
+        Button RiderButton = findViewById(R.id.RiderButton);
 
 
         Intent intent = getIntent();
@@ -68,6 +68,24 @@ public class UserActivity extends AppCompatActivity {
         textView.setText(user.getEmail());
 
 
+        DriverButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DriverFragment driverFragment = DriverFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, driverFragment).commit();
+            }
+        });
+
+        RiderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RiderFragment riderFragment = RiderFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, riderFragment).commit();
+            }
+        });
+
+
         //Logout button feature
         LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +99,10 @@ public class UserActivity extends AppCompatActivity {
 
     }
 
+
+
+
+    //sign out method
     private void signOut() {
         // Firebase sign out
         mAuth.signOut();

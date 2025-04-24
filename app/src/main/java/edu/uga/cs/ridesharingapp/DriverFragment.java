@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Driver_Fragment#newInstance} factory method to
+ * Use the {@link DriverFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Driver_Fragment extends Fragment {
+public class DriverFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +24,7 @@ public class Driver_Fragment extends Fragment {
 //    private String mParam1;
 //    private String mParam2;
 
-    public Driver_Fragment() {
+    public DriverFragment() {
         // Required empty public constructor
     }
 
@@ -37,8 +37,8 @@ public class Driver_Fragment extends Fragment {
      * @return A new instance of fragment Driver_Fragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Driver_Fragment newInstance() {
-        Driver_Fragment fragment = new Driver_Fragment();
+    public static DriverFragment newInstance() {
+        DriverFragment fragment = new DriverFragment();
         Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
@@ -59,6 +59,6 @@ public class Driver_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_driver_, container, false);
+        return inflater.inflate(R.layout.fragment_driver, container, false);
     }
 }

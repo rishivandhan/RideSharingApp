@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/FrameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Driver_Fragment">
+    tools:context=".RiderFragment">
 
+    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/DriverFormTitle"
+        android:id="@+id/RiderFormTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
         android:layout_marginTop="20dp"
-        android:text="Driver Form"
+        android:text="Rider Form"
         android:textAllCaps="true" />
 
     <EditText
-        android:id="@+id/DateInput"
+        android:id="@+id/RiderDateInput"
         android:layout_width="227dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:hint="Enter Date"
         android:inputType="date" />
 
     <EditText
-        android:id="@+id/TimeInput"
+        android:id="@+id/RiderTimeInput"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="150dp"
         android:hint="Enter Time "
         android:inputType="time" />
 
     <EditText
-        android:id="@+id/StartingPointInput"
+        android:id="@+id/RiderstartingPointInput"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="200dp"
         android:hint="Enter Starting Point"
         android:inputType="text" />
 
     <EditText
-        android:id="@+id/EndingPointInput"
+        android:id="@+id/RiderEndingPointInput"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="250dp"
         android:hint="Enter Destination Point"
         android:inputType="text" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/RequestRideButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="400dp"
-        android:text="Button" />
+        android:layout_marginTop="350dp"
+        android:text="Request Rider"
+        android:textAllCaps="true" />
+
 </FrameLayout>
