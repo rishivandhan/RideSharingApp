@@ -45,19 +45,30 @@ public class UserActivity extends AppCompatActivity {
 
         TextView textView = findViewById( R.id.userID );
         Button LogoutButton = findViewById(R.id.LogoutButton);
+        Button DriverButton = findViewById(R.id.DriverButton);
+        Button RiderButton = findViewById(R.id.DriverButton);
 
 
         Intent intent = getIntent();
+        Bundle UserInfo = intent.getExtras();
+
+        String UserID = UserInfo.getString("UserID");
+        String UserEmail = UserInfo.getString("UserEmail");
+
+
         credentialManager = CredentialManager.create(this);
 
-        String UserId = intent.getStringExtra(LoginFragment.MESSAGE_TYPE);
-        if(UserId == null){
-            Log.d("Failed Credentials", "please sign in");
-        }
-        Log.d("Signed in user", "Current signed in user is: " + UserId);
-        textView.setText(UserId);
+
+        User user = new User(UserID, UserEmail); //make a new instance of the User Object
+
+        Log.d("Signed in user ID", "Current User Signed in UID is: " + user.getID());
+        Log.d("Signed in user", "Current signed in user is: " + user.getEmail());
 
 
+        textView.setText(user.getEmail());
+
+
+        //Logout button feature
         LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
