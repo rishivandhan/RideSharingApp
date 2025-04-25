@@ -111,12 +111,7 @@ public class UserActivity extends AppCompatActivity {
         RiderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!user.getDriver()){
-                    user.setRider(true);
-                }
-
-                RiderFormFragment riderFragment = RiderFormFragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, riderFragment).commit();
+                // TODO
             }
         });
 
