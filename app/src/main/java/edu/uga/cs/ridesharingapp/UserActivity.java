@@ -59,7 +59,7 @@ public class UserActivity extends AppCompatActivity {
         credentialManager = CredentialManager.create(this);
 
 
-        User user = new User(UserID, UserEmail); //make a new instance of the User Object
+        User user = new User(UserID, UserEmail, 50); //make a new instance of the User Object
 
         Log.d("Signed in user ID", "Current User Signed in UID is: " + user.getID());
         Log.d("Signed in user", "Current signed in user is: " + user.getEmail());
