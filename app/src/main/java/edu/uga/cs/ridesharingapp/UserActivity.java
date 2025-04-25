@@ -59,11 +59,17 @@ public class UserActivity extends AppCompatActivity {
         credentialManager = CredentialManager.create(this);
 
 
-        User user = new User(UserID, UserEmail, 50); //make a new instance of the User Object
+
+        User user = new User(UserID, UserEmail, 50, false, false); //make a new instance of the User Object
+
+        boolean rider = user.getRider(); //should print out false
+        boolean driver = user.getDriver();
+
 
         Log.d("Signed in user ID", "Current User Signed in UID is: " + user.getID());
         Log.d("Signed in user", "Current signed in user is: " + user.getEmail());
-
+        Log.d("rider status", "rider is set to: " + rider);
+        Log.d("driver status", "rider is set to: " + driver);
 
         textView.setText(user.getEmail());
 
@@ -71,6 +77,9 @@ public class UserActivity extends AppCompatActivity {
         DriverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!user.getRider()){
+                    user.setDriver(true);
+                }
 
                 DriverFragment driverFragment = DriverFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, driverFragment).commit();
@@ -80,6 +89,10 @@ public class UserActivity extends AppCompatActivity {
         RiderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!user.getDriver()){
+                    user.setRider(true);
+                }
+
                 RiderFragment riderFragment = RiderFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, riderFragment).commit();
             }

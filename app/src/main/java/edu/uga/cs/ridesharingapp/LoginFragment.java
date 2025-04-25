@@ -109,6 +109,7 @@ public class LoginFragment extends Fragment {
 
                                     //start activity with the logged in user
                                     Intent intent = new Intent(getActivity(), UserActivity.class);
+
                                     String CurrentUser = user.getEmail();
                                     String UserID = user.getUid();
                                     Bundle UserInfo = new Bundle();
