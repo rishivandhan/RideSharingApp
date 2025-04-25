@@ -81,8 +81,11 @@ public class UserActivity extends AppCompatActivity {
                     user.setDriver(true);
                 }
 
-                DriverFragment driverFragment = DriverFragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, driverFragment).commit();
+                Intent intent = new Intent(UserActivity.this, DriverActivity.class);
+                startActivity(intent);
+
+
+
             }
         });
 
@@ -93,7 +96,7 @@ public class UserActivity extends AppCompatActivity {
                     user.setRider(true);
                 }
 
-                RiderFragment riderFragment = RiderFragment.newInstance();
+                RiderFormFragment riderFragment = RiderFormFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.FormFragmentContainer, riderFragment).commit();
             }
         });
