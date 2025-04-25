@@ -20,13 +20,19 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.exceptions.ClearCredentialException;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 public class UserActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private CredentialManager credentialManager;
+
+    private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,8 @@ public class UserActivity extends AppCompatActivity {
 
         });
 
+
+
         TextView textView = findViewById( R.id.userID );
         Button LogoutButton = findViewById(R.id.LogoutButton);
         Button DriverButton = findViewById(R.id.DriverButton);
@@ -54,22 +62,33 @@ public class UserActivity extends AppCompatActivity {
 
         String UserID = UserInfo.getString("UserID");
         String UserEmail = UserInfo.getString("UserEmail");
-
+        int points = 50;
+        boolean driver = false;
+        boolean rider = false;
 
         credentialManager = CredentialManager.create(this);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
 
-        User user = new User(UserID, UserEmail, 50, false, false); //make a new instance of the User Object
+        User user = new User(UserID, UserEmail, points, driver, rider); //make a new instance of the User Object
 
-        boolean rider = user.getRider(); //should print out false
-        boolean driver = user.getDriver();
+        HashMap<String, Object> userMap = new HashMap<>();
+        userMap.put("id", UserID);
+        userMap.put("email", UserEmail);
+        userMap.put("points", points);
+
+        mDatabase.child("users").child(UserID).setValue(userMap);
+
+
+        boolean getrider = user.getRider(); //should print out false
+        boolean getdriver = user.getDriver();
 
 
         Log.d("Signed in user ID", "Current User Signed in UID is: " + user.getID());
         Log.d("Signed in user", "Current signed in user is: " + user.getEmail());
-        Log.d("rider status", "rider is set to: " + rider);
-        Log.d("driver status", "rider is set to: " + driver);
+        Log.d("rider status", "rider is set to: " + getrider);
+        Log.d("driver status", "rider is set to: " + getdriver);
 
         textView.setText(user.getEmail());
 
@@ -114,7 +133,6 @@ public class UserActivity extends AppCompatActivity {
         });
 
     }
-
 
 
 
