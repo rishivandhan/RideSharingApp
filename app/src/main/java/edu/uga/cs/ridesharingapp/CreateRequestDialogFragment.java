@@ -108,6 +108,6 @@ public class CreateRequestDialogFragment extends DialogFragment {
     }
 
     public interface AddRideRequestDialogListener {
-        void addRideRequest (RideRequest jobLead);
+        void addRideRequest (RideRequest rideRequest);
     }
 }
