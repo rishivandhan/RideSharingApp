@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UnacceptedRidesActivity extends AppCompatActivity {
@@ -59,13 +60,23 @@ public class UnacceptedRidesActivity extends AppCompatActivity {
         userRideRequestsRef.get().addOnSuccessListener(snapshot -> {
             if (snapshot.exists()) {
                 Log.d(DEBUG_TAG, "Snapshot exists...");
+                List<String> rideRequestIds = new ArrayList<>();
+
                 for (DataSnapshot requestSnapshot : snapshot.getChildren()) {
-                    Log.d(DEBUG_TAG, "Entering loop...");
                     String rideRequestId = requestSnapshot.getKey();
                     Boolean isAccepted = requestSnapshot.getValue(Boolean.class);
 
                     if (rideRequestId != null && Boolean.FALSE.equals(isAccepted)) {
-                        DatabaseReference rideRequestRef = firebaseDatabase.getReference("rideRequests/" + rideRequestId);
+                        rideRequestIds.add(rideRequestId);
+                    }
+                }
+
+                if (!rideRequestIds.isEmpty()) {
+                    final int totalRequests = rideRequestIds.size();
+                    final int[] requestsLoaded = {0};
+
+                    for (String rideRequestId : rideRequestIds) {
+                        DatabaseReference rideRequestRef = firebaseDatabase.getReference("ride_requests/" + rideRequestId);
                         rideRequestRef.get().addOnSuccessListener(rideSnapshot -> {
                             if (rideSnapshot.exists()) {
                                 Log.d(DEBUG_TAG, "ride snapshot exists...");
@@ -73,16 +84,33 @@ public class UnacceptedRidesActivity extends AppCompatActivity {
 
                                 if (rideRequest != null) {
                                     rideRequestList.add(rideRequest);
-                                    adapter.notifyItemInserted(rideRequestList.size() - 1);
                                 }
+                            }
+
+                            requestsLoaded[0]++;
+                            if (requestsLoaded[0] == totalRequests) {
+                                Log.d(DEBUG_TAG, "Finished loading ride requests");
+                                Collections.sort(rideRequestList, (r1, r2) -> Long.compare(r1.getDate(), r2.getDate()));
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(this, "Unaccepted Ride Requests Loaded", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(e -> {
+                            requestsLoaded[0]++;
+                            if (requestsLoaded[0] == totalRequests) {
+                                Log.d(DEBUG_TAG, "Finished loading ride requests (with some failures)");
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(this, "Unaccepted Ride Requests Loaded", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
+                } else {
+                    Toast.makeText(this, "No unaccepted ride requests", Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            Log.d(DEBUG_TAG, "Finished loading ride requests");
-            Toast.makeText(this, "Unaccepted Ride Requests Loaded", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d(DEBUG_TAG, "No ride requests for this user");
+                Toast.makeText(this, "No ride requests found", Toast.LENGTH_SHORT).show();
+            }
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Unable to load Ride Requests", Toast.LENGTH_SHORT).show();
             Log.e(DEBUG_TAG, "Failed to load ride requests", e);
