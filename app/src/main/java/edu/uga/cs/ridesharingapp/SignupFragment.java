@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,7 +122,20 @@ public class SignupFragment extends Fragment {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d("Account Creation", "Account Created Successfully");
                                     Toast.makeText(getActivity(), "Account Created Successfully", Toast.LENGTH_SHORT).show();
-                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                                    FirebaseUser currUser = task.getResult().getUser();
+
+                                    int points = 50;
+                                    boolean driver = false;
+                                    boolean rider = false;
+                                    String UserID = currUser.getUid();
+
+                                    HashMap<String, Object> userMap = new HashMap<>();
+                                    userMap.put("id", UserID);
+                                    userMap.put("email", email);
+                                    userMap.put("points", points);
+
+                                    mDatabase.child("users").child(UserID).setValue(userMap);
 
 //                                    Intent intent = new Intent(getActivity(), UserActivity.class);
 //                                    intent.putExtra("CurrentUser", user);

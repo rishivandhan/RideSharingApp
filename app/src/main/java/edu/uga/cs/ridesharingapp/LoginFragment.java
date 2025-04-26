@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +33,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginFragment extends Fragment {
 
     public static final String MESSAGE_TYPE = "edu.uga.cs.ridesharingapp.MESSAGE_TYPE";
+    public static final String DEBUG_TAG = "LoginFragment";
+
+    private User userOBJ;
 
 
     public LoginFragment() {
@@ -114,12 +119,34 @@ public class LoginFragment extends Fragment {
                                     String UserID = user.getUid();
                                     Bundle UserInfo = new Bundle();
 
+                                    DatabaseReference userRef = FirebaseDatabase.getInstance()
+                                            .getReference("users")
+                                            .child(UserID);
+                                    userRef.get().addOnSuccessListener(snapshot -> {
+                                        if (snapshot.exists()) {
+                                            String id = snapshot.child("id").getValue(String.class);
+                                            String email = snapshot.child("email").getValue(String.class);
+                                            Integer points = snapshot.child("points").getValue(Integer.class);
 
-                                    UserInfo.putString("UserID", UserID);
-                                    UserInfo.putString("UserEmail", CurrentUser);
-
-                                    intent.putExtras(UserInfo);
-                                    startActivity(intent);
+                                            if (id != null && email != null && points != null) {
+                                                userOBJ = new User(id, email, points, false, false);
+                                                Log.d(DEBUG_TAG, "User loaded: " + id + ", " + email + ", " + points);
+                                                UserInfo.putString("UserID", UserID);
+                                                UserInfo.putString("UserEmail", userOBJ.getEmail());
+                                                UserInfo.putInt("UserPoints", userOBJ.getPoints());
+                                                UserInfo.putBoolean("UserRider", userOBJ.getRider());
+                                                UserInfo.putBoolean("UserDriver", userOBJ.getDriver());
+                                                intent.putExtras(UserInfo);
+                                                startActivity(intent);
+                                            } else {
+                                                Log.e(DEBUG_TAG, "Missing fields in user object");
+                                            }
+                                        } else {
+                                            Log.e(DEBUG_TAG, "User does not exist");
+                                        }
+                                    }).addOnFailureListener(e -> {
+                                        Log.e(DEBUG_TAG, "Failed to load user", e);
+                                    });
 
 
                                 } else {

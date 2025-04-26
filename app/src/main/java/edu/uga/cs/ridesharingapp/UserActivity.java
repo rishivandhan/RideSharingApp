@@ -27,10 +27,11 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 public class UserActivity extends AppCompatActivity {
+    private static final String DEBUG_TAG = "UserActivity";
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private CredentialManager credentialManager;
-
+    private User user;
     private DatabaseReference mDatabase;
 
 
@@ -62,9 +63,9 @@ public class UserActivity extends AppCompatActivity {
 
         String UserID = UserInfo.getString("UserID");
         String UserEmail = UserInfo.getString("UserEmail");
-        int points = 50;
-        boolean driver = false;
-        boolean rider = false;
+        int points = UserInfo.getInt("UserPoints");
+        boolean driver = UserInfo.getBoolean("UserDriver");
+        boolean rider = UserInfo.getBoolean("UserRider");
 
         credentialManager = CredentialManager.create(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -73,22 +74,12 @@ public class UserActivity extends AppCompatActivity {
 
         User user = new User(UserID, UserEmail, points, driver, rider); //make a new instance of the User Object
 
-        HashMap<String, Object> userMap = new HashMap<>();
-        userMap.put("id", UserID);
-        userMap.put("email", UserEmail);
-        userMap.put("points", points);
-
-        mDatabase.child("users").child(UserID).setValue(userMap);
-
-
-        boolean getrider = user.getRider(); //should print out false
-        boolean getdriver = user.getDriver();
 
 
         Log.d("Signed in user ID", "Current User Signed in UID is: " + user.getID());
         Log.d("Signed in user", "Current signed in user is: " + user.getEmail());
-        Log.d("rider status", "rider is set to: " + getrider);
-        Log.d("driver status", "rider is set to: " + getdriver);
+        Log.d("rider status", "rider is set to: " + user.getRider());
+        Log.d("driver status", "rider is set to: " + user.getDriver());
 
         textView.setText(user.getEmail());
 
