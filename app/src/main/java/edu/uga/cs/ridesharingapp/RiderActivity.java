@@ -81,19 +81,15 @@ public class RiderActivity extends AppCompatActivity
                     Log.e(DEBUG_TAG, "Error Storing in Firebase", e);
                 });
 
-        String uRefPath = "users/" + userID + "/ride_requests";
+        String uRefPath = "users/" + userID + "/ride_requests/" + genKey;
         DatabaseReference uReference = firebaseDatabase.getReference(uRefPath);
-        DatabaseReference newUReference = uReference.push();
 
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("requestid", genKey);
-
-        newUReference.setValue(hashMap)
+        uReference.setValue(rideRequest.isAccepted())
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(DEBUG_TAG, "Added the ride request to the requests list of " + userID + ".");
+                    Log.d(DEBUG_TAG, "Added the ride request to the requests list of " + userID + " with accepted=" + rideRequest.isAccepted());
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(DEBUG_TAG, "Error Storing in Firebase", e);
+                    Log.e(DEBUG_TAG, "Error storing in Firebase", e);
                 });
     }
 }
