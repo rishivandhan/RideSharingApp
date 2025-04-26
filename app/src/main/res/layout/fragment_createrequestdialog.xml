@@ -2,34 +2,33 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editTextDate"
+    <TextView
+        android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTime"
+        android:text="Chose a Date"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewTime"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextTime"
+    <TextView
+        android:id="@+id/textViewTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="time"
+        android:text="Choose a Time"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/editTextStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
 
     <EditText
         android:id="@+id/editTextStart"
@@ -39,10 +38,11 @@
         android:ems="10"
         android:inputType="text"
         android:text="@string/start_hint"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/editTextEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTime" />
 
     <EditText
         android:id="@+id/editTextEnd"
@@ -52,6 +52,7 @@
         android:ems="10"
         android:inputType="text"
         android:text="@string/end_hint"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextStart" />
