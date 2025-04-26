@@ -16,11 +16,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class RideRequestAdapter extends RecyclerView.Adapter<RideRequestAdapter.RideRequestViewHolder> {
+public class EditRideRequestAdapter extends RecyclerView.Adapter<EditRideRequestAdapter.RideRequestViewHolder> {
     private List<RideRequest> rideRequests;
     private Context context;
 
-    public RideRequestAdapter(List<RideRequest> rideRequests, Context context) {
+    public EditRideRequestAdapter(List<RideRequest> rideRequests, Context context) {
         this.rideRequests = rideRequests;
         this.context = context;
     }
