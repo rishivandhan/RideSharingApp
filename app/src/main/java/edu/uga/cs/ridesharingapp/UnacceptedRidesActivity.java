@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UnacceptedRidesActivity extends AppCompatActivity {
@@ -72,7 +73,7 @@ public class UnacceptedRidesActivity extends AppCompatActivity {
 
                 if (!rideRequestIds.isEmpty()) {
                     final int totalRequests = rideRequestIds.size();
-                    final int[] requestsLoaded = {0};  // Counter inside an array to allow modification inside lambda
+                    final int[] requestsLoaded = {0};
 
                     for (String rideRequestId : rideRequestIds) {
                         DatabaseReference rideRequestRef = firebaseDatabase.getReference("ride_requests/" + rideRequestId);
@@ -86,17 +87,16 @@ public class UnacceptedRidesActivity extends AppCompatActivity {
                                 }
                             }
 
-                            requestsLoaded[0]++;  // increment how many requests we've loaded
+                            requestsLoaded[0]++;
                             if (requestsLoaded[0] == totalRequests) {
-                                // All ride requests have been loaded!
                                 Log.d(DEBUG_TAG, "Finished loading ride requests");
+                                Collections.sort(rideRequestList, (r1, r2) -> Long.compare(r1.getDate(), r2.getDate()));
                                 adapter.notifyDataSetChanged();
                                 Toast.makeText(this, "Unaccepted Ride Requests Loaded", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(e -> {
                             requestsLoaded[0]++;
                             if (requestsLoaded[0] == totalRequests) {
-                                // Even if some fail, when all are attempted, finish
                                 Log.d(DEBUG_TAG, "Finished loading ride requests (with some failures)");
                                 adapter.notifyDataSetChanged();
                                 Toast.makeText(this, "Unaccepted Ride Requests Loaded", Toast.LENGTH_SHORT).show();
