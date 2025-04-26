@@ -57,8 +57,17 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
             }
         });
 
-
-
+        ViewUnacceptedRideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent UnaccceptedIntent = new Intent(DriverActivity.this, UnacceptedRideOffers.class);
+                Bundle uInfo = new Bundle();
+                String UId = userInfo.getString("UserID");
+                uInfo.putString("UserID", UId);
+                UnaccceptedIntent.putExtras(uInfo);
+                startActivity(UnaccceptedIntent);
+            }
+        });
 
 
     }
@@ -83,7 +92,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                     Log.e(DEBUG_TAG, "Error Storing in Firebase", e);
                 });
 
-        String uRefPath = "users/" + userID + "/ride_requests/" + genKey;
+        String uRefPath = "users/" + userID + "/ride_offers/" + genKey;
         DatabaseReference uReference = firebaseDatabase.getReference(uRefPath);
 
         uReference.setValue(rideOffer.isAccepted())

@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="12dp"> <!-- Add some padding around each item for a clean look -->
 
     <TextView
-        android:id="@+id/DriverTextViewStartLoc"
-        android:layout_width="wrap_content"
+        android:id="@+id/DrivertextViewStartLoc"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Starting Location"
-        app:layout_constraintEnd_toStartOf="@+id/DriverTextViewEndLoc"
-        app:layout_constraintHorizontal_bias="0.057"
+        android:text="@string/start_hint"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/DrivertextViewDateView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/DrivertextViewEndLoc"
+        app:layout_constraintHorizontal_bias="0" />
 
     <TextView
-        android:id="@+id/DriverTextViewEndLoc"
+        android:id="@+id/DrivertextViewEndLoc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/end_hint"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/DrivertextViewDateView"
+        app:layout_constraintTop_toBottomOf="@id/DrivertextViewStartLoc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <TextView
+        android:id="@+id/DrivertextViewDateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="16dp"
-        android:text="Date"
+        android:text="@string/date_hint"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/DriverTextViewDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
-        android:text="Destination"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DriverTextViewStartLoc" />
-
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

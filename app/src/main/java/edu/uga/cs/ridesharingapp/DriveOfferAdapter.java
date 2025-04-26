@@ -47,9 +47,9 @@ public class DriveOfferAdapter extends RecyclerView.Adapter<DriveOfferAdapter.Dr
 
         public DriveOfferViewHolder(@NonNull View itemView) {
             super(itemView);
-            DrivertextViewStart = itemView.findViewById(R.id.textViewStartLoc);
-            DrivertextViewEnd = itemView.findViewById(R.id.textViewEndLoc);
-            DrivertextViewDate = itemView.findViewById(R.id.textViewDateView);
+            DrivertextViewStart = itemView.findViewById(R.id.DrivertextViewStartLoc);
+            DrivertextViewEnd = itemView.findViewById(R.id.DrivertextViewEndLoc);
+            DrivertextViewDate = itemView.findViewById(R.id.DrivertextViewDateView);
         }
 
         public void bind(DriveOffer driveOffer) {
