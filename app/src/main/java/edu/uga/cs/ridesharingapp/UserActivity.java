@@ -77,7 +77,6 @@ public class UserActivity extends AppCompatActivity {
         userMap.put("id", UserID);
         userMap.put("email", UserEmail);
         userMap.put("points", points);
-
         mDatabase.child("users").child(UserID).setValue(userMap);
 
 
