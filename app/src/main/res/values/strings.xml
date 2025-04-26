@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">RideSharingApp</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="request_create">Create Ride Request</string>
+    <string name="request_unaccepted_view">View Unaccepted Requests</string>
+    <string name="request_accepted_view">View Accepted Requests</string>
+    <string name="offers_title">Available Ride Offers</string>
 </resources>
