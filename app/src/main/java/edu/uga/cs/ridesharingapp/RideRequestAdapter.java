@@ -1,5 +1,6 @@
 package edu.uga.cs.ridesharingapp;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -16,9 +18,11 @@ import java.util.Locale;
 
 public class RideRequestAdapter extends RecyclerView.Adapter<RideRequestAdapter.RideRequestViewHolder> {
     private List<RideRequest> rideRequests;
+    private Context context;
 
-    public RideRequestAdapter(List<RideRequest> rideRequests) {
+    public RideRequestAdapter(List<RideRequest> rideRequests, Context context) {
         this.rideRequests = rideRequests;
+        this.context = context;
     }
 
     @NonNull
@@ -32,6 +36,20 @@ public class RideRequestAdapter extends RecyclerView.Adapter<RideRequestAdapter.
     public void onBindViewHolder(@NonNull RideRequestViewHolder holder, int position) {
         RideRequest rideRequest = rideRequests.get(position);
         holder.bind(rideRequest);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditRequestDialogFragment editRequestDialogFragment =
+                        EditRequestDialogFragment.newInstance(
+                                holder.getAdapterPosition(),
+                                rideRequest.getKey(),
+                                rideRequest.getDate(),
+                                rideRequest.getStartLocation(),
+                                rideRequest.getEndLocation()
+                        );
+                editRequestDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(), null);
+            }
+        });
     }
 
     @Override

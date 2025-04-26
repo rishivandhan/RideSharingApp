@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,22 +19,41 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class CreateRequestDialogFragment extends DialogFragment {
+public class EditRequestDialogFragment extends DialogFragment {
+    public static final int SAVE = 1;
+    public static final int DELETE = 2;
     private TextView textViewDate;
     private TextView textViewTime;
     private EditText editTextStart;
     private EditText editTextEnd;
     private Calendar calendar;
+    int position;
+    String key;
+    long date;
+    String startLocation;
+    String endLocation;
 
-    public boolean isDriverMode = false; //default is rider
+    public static EditRequestDialogFragment newInstance (int position, String key, long date, String startLoc, String endLoc) {
+        EditRequestDialogFragment dialogFragment = new EditRequestDialogFragment();
 
-    public void setDriverMode(boolean isDriverMode) {
-        this.isDriverMode = isDriverMode;
+        Bundle args = new Bundle();
+        args.putString("key", key);
+        args.putLong("date", date);
+        args.putString("startLocation", startLoc);
+        args.putString("endLocation", endLoc);
+        dialogFragment.setArguments(args);
+
+        return dialogFragment;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        key = getArguments().getString("key");
+        date = getArguments().getLong("date");
+        startLocation = getArguments().getString("startLocation");
+        endLocation = getArguments().getString("endLocation");
+
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         final View layout = inflater.inflate(R.layout.fragment_createrequestdialog,
@@ -44,6 +62,14 @@ public class CreateRequestDialogFragment extends DialogFragment {
         textViewDate = layout.findViewById(R.id.textViewDate);
         textViewTime = layout.findViewById(R.id.textViewTime);
         calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateString = dateFormat.format(calendar.getTime());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String timeString = timeFormat.format(calendar.getTime());
+        textViewDate.setText(dateString);
+        textViewTime.setText(timeString);
 
         textViewDate.setOnClickListener(v -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -86,28 +112,25 @@ public class CreateRequestDialogFragment extends DialogFragment {
         editTextStart = layout.findViewById(R.id.editTextStart);
         editTextEnd = layout.findViewById(R.id.editTextEnd);
 
+        editTextStart.setText(startLocation);
+        editTextEnd.setText(endLocation);
+
         builder.setView(layout);
-
-        if(isDriverMode){
-            builder.setPositiveButton(R.string.create_item, new addRideOfferListener());
-        } else {
-            builder.setPositiveButton(R.string.create_item, new AddRideRequestListener());
-        }
-
-
+        builder.setPositiveButton(R.string.update_item, new UpdateRideRequestListener());
         builder.setNegativeButton(R.string.cancel_item, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
         });
+        builder.setNeutralButton(R.string.delete_item, new DeleteRideRequestListener());
 
-        builder.setTitle("Create Ride Request");
+        builder.setTitle("Edit Ride Request");
 
         return builder.create();
     }
 
-    private class AddRideRequestListener implements DialogInterface.OnClickListener {
+    private class UpdateRideRequestListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             long dateTimeTimestamp = calendar.getTimeInMillis();
@@ -115,33 +138,27 @@ public class CreateRequestDialogFragment extends DialogFragment {
             String endLoc = editTextEnd.getText().toString();
 
             RideRequest rideRequest = new RideRequest(dateTimeTimestamp, startLoc, endLoc);
-            AddRideRequestDialogListener addRideRequestDialogListener = (AddRideRequestDialogListener) requireActivity();
-            addRideRequestDialogListener.addRideRequest(rideRequest);
+            rideRequest.setKey(key);
+            EditRideRequestDialogListener editRideRequestDialogListener = (EditRideRequestDialogListener) requireActivity();
+            editRideRequestDialogListener.updateRideRequest(position, rideRequest, SAVE);
 
             dismiss();
         }
     }
 
-
-    private class addRideOfferListener implements DialogInterface.OnClickListener {
+    private class DeleteRideRequestListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
-            long dateTimeTimestamp = calendar.getTimeInMillis();
-            String startLoc = editTextStart.getText().toString();
-            String endLoc = editTextEnd.getText().toString();
+            RideRequest rideRequest = new RideRequest(date, startLocation, endLocation);
+            rideRequest.setKey(key);
+            EditRideRequestDialogListener editRideRequestDialogListener = (EditRideRequestDialogListener) requireActivity();
+            editRideRequestDialogListener.updateRideRequest(position, rideRequest, DELETE);
 
-            DriveOffer driveOffer = new DriveOffer(dateTimeTimestamp, startLoc, endLoc);
-            AddRideOfferDialogListener addRideOfferListener = (AddRideOfferDialogListener) requireActivity();
-            addRideOfferListener.addRideOffer(driveOffer);
             dismiss();
         }
     }
 
-    public interface AddRideRequestDialogListener {
-        void addRideRequest (RideRequest rideRequest);
-    }
-
-    public interface AddRideOfferDialogListener {
-        void addRideOffer (DriveOffer driveOffer);
+    public interface EditRideRequestDialogListener {
+        void updateRideRequest(int position, RideRequest rideRequest, int action);
     }
 }
