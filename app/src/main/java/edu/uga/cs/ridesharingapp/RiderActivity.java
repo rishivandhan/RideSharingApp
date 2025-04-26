@@ -51,6 +51,15 @@ public class RiderActivity extends AppCompatActivity
             CreateRequestDialogFragment dialogFragment = new CreateRequestDialogFragment();
             dialogFragment.show(getSupportFragmentManager(), "CreateRequestDialog");
         });
+
+        viewUnacceptedRequestsButton.setOnClickListener(v -> {
+            Intent unacceptedIntent = new Intent(RiderActivity.this, UnacceptedRidesActivity.class);
+            Bundle uInfo = new Bundle();
+            String UId = UserInfo.getString("UserID");
+            uInfo.putString("UserID", UId);
+            unacceptedIntent.putExtras(uInfo);
+            startActivity(unacceptedIntent);
+        });
     }
 
     @Override
