@@ -11,4 +11,5 @@
     <string name="cancel_item">Cancel</string>
     <string name="delete_item">Delete</string>
     <string name="update_item">Update</string>
+    <string name="date_hint">Date</string>
 </resources>
