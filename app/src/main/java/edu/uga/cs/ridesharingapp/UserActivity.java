@@ -111,7 +111,9 @@ public class UserActivity extends AppCompatActivity {
         RiderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                // TODO: Need to transfer the user object to the new activity so that the user id can be accessed
+                Intent intent = new Intent(UserActivity.this, RiderActivity.class);
+                startActivity(intent);
             }
         });
 

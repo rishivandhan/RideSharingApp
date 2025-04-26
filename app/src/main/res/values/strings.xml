@@ -5,4 +5,10 @@
     <string name="request_unaccepted_view">View Unaccepted Requests</string>
     <string name="request_accepted_view">View Accepted Requests</string>
     <string name="offers_title">Available Ride Offers</string>
+    <string name="start_hint">Starting Location</string>
+    <string name="end_hint">Destination</string>
+    <string name="create_item">Create</string>
+    <string name="cancel_item">Cancel</string>
+    <string name="delete_item">Delete</string>
+    <string name="update_item">Update</string>
 </resources>
