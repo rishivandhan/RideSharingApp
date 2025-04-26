@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,15 +14,19 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class UnacceptedRidesActivity extends AppCompatActivity {
+public class UnacceptedRidesActivity extends AppCompatActivity
+        implements EditRequestDialogFragment.EditRideRequestDialogListener {
     private static final String DEBUG_TAG = "UnacceptedRidesActivity";
     private RecyclerView UnacceptedRidesView;
     private RideRequestAdapter adapter;
@@ -46,11 +51,62 @@ public class UnacceptedRidesActivity extends AppCompatActivity {
 
         UnacceptedRidesView = findViewById(R.id.UnacceptedRidesView);
         UnacceptedRidesView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RideRequestAdapter(rideRequestList);
+        adapter = new RideRequestAdapter(rideRequestList, UnacceptedRidesActivity.this);
         UnacceptedRidesView.setAdapter(adapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         loadRideRequests();
+    }
+
+    @Override
+    public void updateRideRequest(int position, RideRequest rideRequest, int action) {
+        if (action == EditRequestDialogFragment.SAVE)
+        {
+            adapter.notifyDataSetChanged();
+            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_requests")
+                    .child(rideRequest.getKey());
+
+            dRef.addListenerForSingleValueEvent( new ValueEventListener() {
+                @Override
+                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
+                    dataSnapshot.getRef().setValue(rideRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Ride Request Updated", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled( @NonNull DatabaseError databaseError ) {
+                    Toast.makeText(getApplicationContext(), "Failed to Update " + rideRequest.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (action == EditRequestDialogFragment.DELETE)
+        {
+            rideRequestList.remove(position);
+            adapter.notifyDataSetChanged();
+            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_requests")
+                    .child(rideRequest.getKey());
+
+            dRef.addListenerForSingleValueEvent( new ValueEventListener() {
+                @Override
+                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
+                    dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Ride Request Deleted", Toast.LENGTH_SHORT).show();                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled( @NonNull DatabaseError databaseError ) {
+                    Toast.makeText(getApplicationContext(), "Failed to delete Ride Request at " + rideRequest.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void loadRideRequests() {
