@@ -27,6 +27,12 @@ public class CreateRequestDialogFragment extends DialogFragment {
     private EditText editTextEnd;
     private Calendar calendar;
 
+    public boolean isDriverMode = false; //default is rider
+
+    public void setDriverMode(boolean isDriverMode) {
+        this.isDriverMode = isDriverMode;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -81,7 +87,14 @@ public class CreateRequestDialogFragment extends DialogFragment {
         editTextEnd = layout.findViewById(R.id.editTextEnd);
 
         builder.setView(layout);
-        builder.setPositiveButton(R.string.create_item, new AddRideRequestListener());
+
+        if(isDriverMode){
+            builder.setPositiveButton(R.string.create_item, new addRideOfferListener());
+        } else {
+            builder.setPositiveButton(R.string.create_item, new AddRideRequestListener());
+        }
+
+
         builder.setNegativeButton(R.string.cancel_item, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -107,7 +120,26 @@ public class CreateRequestDialogFragment extends DialogFragment {
         }
     }
 
+
+    private class addRideOfferListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            long dateTimeTimestamp = calendar.getTimeInMillis();
+            String startLoc = editTextStart.getText().toString();
+            String endLoc = editTextEnd.getText().toString();
+
+            DriveOffer driveOffer = new DriveOffer(dateTimeTimestamp, startLoc, endLoc);
+            AddRideOfferDialogListener addRideOfferListener = (AddRideOfferDialogListener) requireActivity();
+            addRideOfferListener.addRideOffer(driveOffer);
+            dismiss();
+        }
+    }
+
     public interface AddRideRequestDialogListener {
         void addRideRequest (RideRequest rideRequest);
+    }
+
+    public interface AddRideOfferDialogListener {
+        void addRideOffer (DriveOffer driveOffer);
     }
 }

@@ -92,6 +92,10 @@ public class UserActivity extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(UserActivity.this, DriverActivity.class);
+                Bundle uInfo = new Bundle();
+                String UId = UserInfo.getString("UserID");
+                uInfo.putString("UserID", UId);
+                intent.putExtras(uInfo);
                 startActivity(intent);
 
 

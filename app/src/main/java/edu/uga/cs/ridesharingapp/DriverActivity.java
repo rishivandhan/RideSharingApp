@@ -1,17 +1,30 @@
 package edu.uga.cs.ridesharingapp;
 
+import static edu.uga.cs.ridesharingapp.LoginFragment.DEBUG_TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class DriverActivity extends AppCompatActivity {
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+public class DriverActivity extends AppCompatActivity implements CreateRequestDialogFragment.AddRideOfferDialogListener {
+    private Button createRidebutton;
+    private Button ViewUnacceptedRideButton;
+    private Button ViewAcceptedRideButton;
+    private RecyclerView availableRideOffers;
+    private String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,18 +36,62 @@ public class DriverActivity extends AppCompatActivity {
             return insets;
         });
 
+        Intent intent = getIntent();
+        Bundle userInfo = intent.getExtras();
+        userID = userInfo.getString("UserID");
 
-        Button CreateRide = findViewById(R.id.CreateRideButton);
+        createRidebutton = findViewById(R.id.CreateRideButton);
+        ViewUnacceptedRideButton = findViewById(R.id.ViewUncOfferButton);
+        ViewAcceptedRideButton = findViewById(R.id.ViewAccRideButton);
+        availableRideOffers = findViewById(R.id.AvailableDriveOfferView);
 
-        CreateRide.setOnClickListener(new View.OnClickListener() {
+
+
+        createRidebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DriverFormFragment driverFragment = DriverFormFragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.DriverFormContainer, driverFragment).commit();
+                CreateRequestDialogFragment requestFragment = new CreateRequestDialogFragment();
+                requestFragment.setDriverMode(true);
+                requestFragment.show(getSupportFragmentManager(), "CreateDriverDialog");
+
             }
         });
 
 
 
+
+
+    }
+
+
+
+    public void addRideOffer(DriveOffer rideOffer) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference rrReference = firebaseDatabase.getReference("ride_offers");
+
+        DatabaseReference newRRReference = rrReference.push();
+        String genKey = newRRReference.getKey();
+        rideOffer.setKey(genKey);
+        rideOffer.setDriverid(userID);
+
+        newRRReference.setValue(rideOffer)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Ride Offer Created", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Ride Request Failed to Create", Toast.LENGTH_SHORT).show();
+                    Log.e(DEBUG_TAG, "Error Storing in Firebase", e);
+                });
+
+        String uRefPath = "users/" + userID + "/ride_requests/" + genKey;
+        DatabaseReference uReference = firebaseDatabase.getReference(uRefPath);
+
+        uReference.setValue(rideOffer.isAccepted())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(DEBUG_TAG, "Added the ride request to the requests list of " + userID + " with accepted=" + rideOffer.isAccepted());
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(DEBUG_TAG, "Error storing in Firebase", e);
+                });
     }
 }
