@@ -113,6 +113,10 @@ public class UserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO: Need to transfer the user object to the new activity so that the user id can be accessed
                 Intent intent = new Intent(UserActivity.this, RiderActivity.class);
+                Bundle uInfo = new Bundle();
+                String UId = UserInfo.getString("UserID");
+                uInfo.putString("UserID", UId);
+                intent.putExtras(uInfo);
                 startActivity(intent);
             }
         });
