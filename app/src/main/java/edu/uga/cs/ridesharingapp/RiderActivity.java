@@ -162,7 +162,7 @@ public class RiderActivity extends AppCompatActivity
                     if (driverId != null && !driverId.isEmpty()) {
                         DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
                                 .child(driverId)
-                                .child("ride_offers")
+                                .child("created_ride_offers")
                                 .child(driveOffer.getKey());
 
                         driverOfferRef.setValue(true)

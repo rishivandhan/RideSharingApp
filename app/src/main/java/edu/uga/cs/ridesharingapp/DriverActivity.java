@@ -176,15 +176,31 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("accepted", true);
-        updates.put("riderid", userID);
+        updates.put("driverid", userID);
 
         offerRef.updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-                    rideRequests.remove(position);
+                    String riderid = rideRequest.getCreatorid();
+                    if (riderid != null && !riderid.isEmpty()) {
+                        DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
+                                .child(riderid)
+                                .child("created_ride_requests")
+                                .child(rideRequest.getKey());
 
-                    adapter.notifyItemRemoved(position);
-                    adapter.notifyItemRangeChanged(position, rideRequests.size());
+                        driverOfferRef.setValue(true)
+                                .addOnSuccessListener(aVoid2 -> {
+                                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                                    rideRequests.remove(position);
+
+                                    adapter.notifyItemRemoved(position);
+                                    adapter.notifyItemRangeChanged(position, rideRequests.size());
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
+                                });
+                    } else {
+                        Log.e(DEBUG_TAG, "Driver ID is null or empty for the offer");
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to accept offer", Toast.LENGTH_SHORT).show();
