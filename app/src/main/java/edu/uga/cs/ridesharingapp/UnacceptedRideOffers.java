@@ -46,7 +46,7 @@ public class UnacceptedRideOffers extends AppCompatActivity {
 
         unacceptedOffers = findViewById(R.id.ViewUnacceptedOffers);
         unacceptedOffers.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DriveOfferAdapter(driveOfferList);
+        adapter = new DriveOfferAdapter(UnacceptedRideOffers.this, driveOfferList );
         unacceptedOffers.setAdapter(adapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();

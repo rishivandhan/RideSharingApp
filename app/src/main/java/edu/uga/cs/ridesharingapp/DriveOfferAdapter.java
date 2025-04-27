@@ -1,5 +1,6 @@
 package edu.uga.cs.ridesharingapp;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,8 +19,10 @@ import java.util.Locale;
 
 public class DriveOfferAdapter extends RecyclerView.Adapter<DriveOfferAdapter.DriveOfferViewHolder> {
     private List<DriveOffer> driveOffers;
+    private Context context;
 
-    public DriveOfferAdapter(List<DriveOffer> driveOffers) {
+    public DriveOfferAdapter(Context context, List<DriveOffer> driveOffers) {
+        this.context = context;
         this.driveOffers = driveOffers;
     }
 
@@ -32,6 +37,21 @@ public class DriveOfferAdapter extends RecyclerView.Adapter<DriveOfferAdapter.Dr
     public void onBindViewHolder(@NonNull DriveOfferViewHolder holder, int position) {
         DriveOffer driveOffer = driveOffers.get(position);
         holder.bind(driveOffer);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditRequestDialogFragment editRequestDialogFragment = EditRequestDialogFragment.newInstance(
+                        holder.getAdapterPosition(),
+                        driveOffer.getKey(),
+                        driveOffer.getDate(),
+                        driveOffer.getStartLocation(),
+                        driveOffer.getEndLocation()
+                );
+                editRequestDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(), null);
+            }
+        });
     }
 
     @Override
