@@ -36,19 +36,21 @@ public class EditRideRequestAdapter extends RecyclerView.Adapter<EditRideRequest
     public void onBindViewHolder(@NonNull RideRequestViewHolder holder, int position) {
         RideRequest rideRequest = rideRequests.get(position);
         holder.bind(rideRequest);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditRequestDialogFragment editRequestDialogFragment =
-                        EditRequestDialogFragment.newInstance(
-                                holder.getAdapterPosition(),
-                                rideRequest.getKey(),
-                                rideRequest.getDate(),
-                                rideRequest.getStartLocation(),
-                                rideRequest.getEndLocation()
-                        );
-                editRequestDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(), null);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            // 1) Build the AcceptRequestDialogFragment
+            AcceptRequestDialogFragment dlg = AcceptRequestDialogFragment.newInstance(
+                    holder.getAdapterPosition(),
+                    rideRequest.getKey(),
+                    rideRequest.getDate(),
+                    rideRequest.getStartLocation(),
+                    rideRequest.getEndLocation()
+            );
+
+            // 2) Show it
+            dlg.show(
+                    ((AppCompatActivity) context).getSupportFragmentManager(),
+                    "AcceptRequest"
+            );
         });
     }
 

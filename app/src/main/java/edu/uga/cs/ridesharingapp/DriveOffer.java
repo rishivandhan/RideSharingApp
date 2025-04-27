@@ -5,7 +5,7 @@ import java.sql.Driver;
 public class DriveOffer {
     private String key;
     private String riderid;
-    private String driverid;
+    private String creatorid;
     private long date;
     private String startLocation;
     private String endLocation;
@@ -16,7 +16,7 @@ public class DriveOffer {
     public DriveOffer(){
         this.key = null;
         this.riderid = null;
-        this.driverid = null;
+        this.creatorid = null;
         this.date = 0;
         this.startLocation = null;
         this.endLocation = null;
@@ -28,7 +28,7 @@ public class DriveOffer {
     public DriveOffer(long date, String startLocation, String endLocation){
         this.key = null;
         this.riderid = null;
-        this.driverid = null;
+        this.creatorid = null;
         this.date = date;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
@@ -45,8 +45,8 @@ public class DriveOffer {
         return riderid;
     }
 
-    public String getDriverid() {
-        return driverid;
+    public String getCreatorid() {
+        return creatorid;
     }
 
     public long getDate() {
@@ -81,8 +81,8 @@ public class DriveOffer {
         this.riderid = riderid;
     }
 
-    public void setDriverid(String driverid) {
-        this.driverid = driverid;
+    public void setCreatorid(String creatorid) {
+        this.creatorid = creatorid;
     }
 
     public void setDate(long date) {

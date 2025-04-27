@@ -143,5 +143,7 @@ public class CreateRequestDialogFragment extends DialogFragment {
 
     public interface AddRideOfferDialogListener {
         void addRideOffer (DriveOffer driveOffer);
+
+        void AcceptRideOffer(int position, RideRequest rideRequest);
     }
 }

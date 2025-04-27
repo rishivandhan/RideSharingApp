@@ -4,7 +4,6 @@ import static edu.uga.cs.ridesharingapp.LoginFragment.DEBUG_TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,11 +25,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class DriverActivity extends AppCompatActivity implements CreateRequestDialogFragment.AddRideOfferDialogListener {
+public class DriverActivity extends AppCompatActivity implements CreateRequestDialogFragment.AddRideOfferDialogListener, AcceptRequestDialogFragment.AcceptRideRequestDialogListener {
     private Button createRidebutton;
     private Button ViewUnacceptedRideButton;
     private Button ViewAcceptedRideButton;
@@ -104,7 +104,9 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                 rideRequests.clear();
                 for(DataSnapshot child : snapshot.getChildren()){
                     RideRequest req = child.getValue(RideRequest.class);
-
+                    if(userID.equals(req.getCreatorid())){
+                        continue;
+                    }
                     if (req != null){
                         req.setKey(child.getKey());
                         rideRequests.add(req);
@@ -129,7 +131,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         });
     }
 
-
+    @Override
     public void addRideOffer(DriveOffer rideOffer) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference rrReference = firebaseDatabase.getReference("ride_offers");
@@ -137,7 +139,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         DatabaseReference newRRReference = rrReference.push();
         String genKey = newRRReference.getKey();
         rideOffer.setKey(genKey);
-        rideOffer.setDriverid(userID);
+        rideOffer.setCreatorid(userID);
 
         newRRReference.setValue(rideOffer)
                 .addOnSuccessListener(aVoid -> {
@@ -148,7 +150,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                     Log.e(DEBUG_TAG, "Error Storing in Firebase", e);
                 });
 
-        String uRefPath = "users/" + userID + "/ride_offers/" + genKey;
+        String uRefPath = "users/" + userID + "/created_ride_offers/" + genKey;
         DatabaseReference uReference = firebaseDatabase.getReference(uRefPath);
 
         uReference.setValue(rideOffer.isAccepted())
@@ -159,4 +161,29 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                     Log.e(DEBUG_TAG, "Error storing in Firebase", e);
                 });
     }
+
+
+    @Override
+    public void AcceptRideOffer(int position, RideRequest rideRequest) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference offerRef = firebaseDatabase.getReference("ride_requests").child(rideRequest.getKey());
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("accepted", true);
+        updates.put("riderid", userID);
+
+        offerRef.updateChildren(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                    rideRequests.remove(position);
+
+                    adapter.notifyItemRemoved(position);
+                    adapter.notifyItemRangeChanged(position, rideRequests.size());
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to accept offer", Toast.LENGTH_SHORT).show();
+                    Log.e(DEBUG_TAG, "Error updating ride offer", e);
+                });
+    }
+
 }

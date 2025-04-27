@@ -88,7 +88,9 @@ public class RiderActivity extends AppCompatActivity
                 driveOffers.clear();
                 for(DataSnapshot child : snapshot.getChildren()){
                     DriveOffer offer = child.getValue(DriveOffer.class);
-
+                    if(userID.equals(offer.getCreatorid())){
+                        continue;
+                    }
                     if (offer != null){
                         offer.setKey(child.getKey());
                         driveOffers.add(offer);
@@ -122,7 +124,7 @@ public class RiderActivity extends AppCompatActivity
         DatabaseReference newRRReference = rrReference.push();
         String genKey = newRRReference.getKey();
         rideRequest.setKey(genKey);
-        rideRequest.setRiderid(userID);
+        rideRequest.setCreatorid(userID);
 
         newRRReference.setValue(rideRequest)
                 .addOnSuccessListener(aVoid -> {
@@ -133,7 +135,7 @@ public class RiderActivity extends AppCompatActivity
                     Log.e(DEBUG_TAG, "Error Storing in Firebase", e);
                 });
 
-        String uRefPath = "users/" + userID + "/ride_requests/" + genKey;
+        String uRefPath = "users/" + userID + "/created_ride_requests/" + genKey;
         DatabaseReference uReference = firebaseDatabase.getReference(uRefPath);
 
         uReference.setValue(rideRequest.isAccepted())
@@ -156,7 +158,7 @@ public class RiderActivity extends AppCompatActivity
 
         offerRef.updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
-                    String driverId = driveOffer.getDriverid();
+                    String driverId = driveOffer.getCreatorid();
                     if (driverId != null && !driverId.isEmpty()) {
                         DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
                                 .child(driverId)

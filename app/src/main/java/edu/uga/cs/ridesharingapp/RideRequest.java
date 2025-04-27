@@ -2,7 +2,7 @@ package edu.uga.cs.ridesharingapp;
 
 public class RideRequest {
     private String key;
-    private String riderid;
+    private String creatorid;
     private String driverid;
     private long date;
     private String startLocation;
@@ -13,7 +13,7 @@ public class RideRequest {
 
     public RideRequest () {
         this.key = null;
-        this.riderid = null;
+        this.creatorid = null;
         this.driverid = null;
         this.date = 0;
         this.startLocation = null;
@@ -25,7 +25,7 @@ public class RideRequest {
 
     public RideRequest (long date, String startLocation, String endLocation) {
         this.key = null;
-        this.riderid = null;
+        this.creatorid = null;
         this.driverid = null;
         this.date = date;
         this.startLocation = startLocation;
@@ -39,8 +39,8 @@ public class RideRequest {
         return key;
     }
 
-    public String getRiderid() {
-        return riderid;
+    public String getCreatorid() {
+        return creatorid;
     }
 
     public String getDriverid() {
@@ -75,8 +75,8 @@ public class RideRequest {
         this.key = key;
     }
 
-    public void setRiderid(String riderid) {
-        this.riderid = riderid;
+    public void setCreatorid(String creatorid) {
+        this.creatorid = creatorid;
     }
 
     public void setDriverid(String driverid) {
