@@ -59,7 +59,7 @@ public class AcceptOfferDialogFragment extends DialogFragment {
             DriveOffer driveOffer = new DriveOffer(date, startLocation, endLocation);
             driveOffer.setKey(key);
             AcceptDriveOfferDialogListener acceptDriveOfferDialogListener = (AcceptDriveOfferDialogListener) requireActivity();
-            acceptDriveOfferDialogListener.acceptDriverOffer(position, driveOffer);
+            acceptDriveOfferDialogListener.acceptDriveOffer(position, driveOffer);
 
             dismiss();
         }
