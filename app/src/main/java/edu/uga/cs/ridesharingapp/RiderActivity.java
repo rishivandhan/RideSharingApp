@@ -142,7 +142,6 @@ public class RiderActivity extends AppCompatActivity
                     Toast.makeText(this, "Offer accepted successfully!", Toast.LENGTH_SHORT).show();
                     driveOffers.remove(position);
                     adapter.notifyItemRemoved(position);
-
                 })
                 .addOnFailureListener(e -> {
                     Log.e(DEBUG_TAG, "Failed to accept offer", e);
