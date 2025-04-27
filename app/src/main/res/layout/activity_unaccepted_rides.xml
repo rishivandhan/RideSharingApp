@@ -7,12 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".UnacceptedRidesActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/UnacceptedRidesView"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Unaccepted Ride Requests"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toTopOf="@+id/UnacceptedRidesView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/UnacceptedRidesView"
+        android:layout_width="379dp"
+        android:layout_height="613dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.576" />
 </androidx.constraintlayout.widget.ConstraintLayout>
