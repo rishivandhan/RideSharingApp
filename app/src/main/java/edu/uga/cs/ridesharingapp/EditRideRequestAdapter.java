@@ -20,7 +20,7 @@ public class EditRideRequestAdapter extends RecyclerView.Adapter<EditRideRequest
     private List<RideRequest> rideRequests;
     private Context context;
 
-    public EditRideRequestAdapter(List<RideRequest> rideRequests, Context context) {
+    public EditRideRequestAdapter(Context context, List<RideRequest> rideRequests) {
         this.rideRequests = rideRequests;
         this.context = context;
     }
@@ -28,7 +28,7 @@ public class EditRideRequestAdapter extends RecyclerView.Adapter<EditRideRequest
     @NonNull
     @Override
     public RideRequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_ride_request, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_drive_request, parent, false);
         return new RideRequestViewHolder(view);
     }
 
@@ -65,9 +65,9 @@ public class EditRideRequestAdapter extends RecyclerView.Adapter<EditRideRequest
 
         public RideRequestViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewStart = itemView.findViewById(R.id.textViewStartLoc);
-            textViewEnd = itemView.findViewById(R.id.textViewEndLoc);
-            textViewDate = itemView.findViewById(R.id.textViewDateView);
+            textViewStart = itemView.findViewById(R.id.DrivertextViewStartLoc);
+            textViewEnd = itemView.findViewById(R.id.DrivertextViewEndLoc);
+            textViewDate = itemView.findViewById(R.id.DrivertextViewDateView);
         }
 
         public void bind(RideRequest rideRequest) {

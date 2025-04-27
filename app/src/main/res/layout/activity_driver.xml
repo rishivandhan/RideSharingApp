@@ -56,14 +56,13 @@
         app:layout_constraintVertical_bias="0.064" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/AvailableDriveOfferView"
+        android:id="@+id/AvailableRideRequestsView"
         android:layout_width="409dp"
-        android:layout_height="513dp"
+        android:layout_height="551dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/offersTitleTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/offersTitleTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

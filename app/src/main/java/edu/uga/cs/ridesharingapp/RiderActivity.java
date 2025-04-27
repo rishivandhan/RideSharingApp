@@ -1,5 +1,7 @@
 package edu.uga.cs.ridesharingapp;
 
+import static edu.uga.cs.ridesharingapp.LoginFragment.DEBUG_TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,33 +76,40 @@ public class RiderActivity extends AppCompatActivity
         });
 
         availableOffersView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new AcceptDriveOfferAdapter(driveOffers,this );
+        availableOffersView.setAdapter(adapter);
         loadAvailableOffers();
     }
 
     private void loadAvailableOffers () {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference offersRef = database.getReference("ride_offers");
+        FirebaseDatabase.getInstance().getReference("ride_offers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                driveOffers.clear();
+                for(DataSnapshot child : snapshot.getChildren()){
+                    DriveOffer offer = child.getValue(DriveOffer.class);
 
-        offersRef.get().addOnSuccessListener(snapshot -> {
-            driveOffers = new ArrayList<>();
-
-            if (snapshot.exists()) {
-                for (DataSnapshot offerSnapshot : snapshot.getChildren()) {
-                    DriveOffer offer = offerSnapshot.getValue(DriveOffer.class);
-
-                    if (offer != null && !offer.isAccepted() && !offer.getDriverid().equals(userID)) {
+                    if (offer != null){
+                        offer.setKey(child.getKey());
                         driveOffers.add(offer);
-                        Log.d(DEBUG_TAG, "Added offer: " + offer.getKey());
                     }
                 }
+
+                Collections.sort(driveOffers, (a, b) ->
+                        Long.compare(b.getDate(), a.getDate())
+                );
+
+                adapter.notifyDataSetChanged();    // ← tell the RecyclerView to refresh
+                Log.d(DEBUG_TAG, "Loaded " + driveOffers.size() + " requests");
+
+                Log.e(DEBUG_TAG, "RideRequestsList: " + driveOffers.toString());
             }
 
-            adapter = new AcceptDriveOfferAdapter(driveOffers, RiderActivity.this);
-            availableOffersView.setAdapter(adapter);
-            Collections.sort(driveOffers, (offer1, offer2) -> Long.compare(offer1.getDate(), offer2.getDate()));
-            adapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> {
-            Log.e(DEBUG_TAG, "Failed to load drive offers", e);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(RiderActivity.this, "Failed to load requests: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(DEBUG_TAG, "firebase error, " +error.toException());
+            }
         });
 
     }

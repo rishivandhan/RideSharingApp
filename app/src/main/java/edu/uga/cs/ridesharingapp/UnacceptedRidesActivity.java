@@ -51,7 +51,7 @@ public class UnacceptedRidesActivity extends AppCompatActivity
 
         UnacceptedRidesView = findViewById(R.id.UnacceptedRidesView);
         UnacceptedRidesView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new EditRideRequestAdapter(rideRequestList, UnacceptedRidesActivity.this);
+        adapter = new EditRideRequestAdapter(UnacceptedRidesActivity.this, rideRequestList );
         UnacceptedRidesView.setAdapter(adapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
