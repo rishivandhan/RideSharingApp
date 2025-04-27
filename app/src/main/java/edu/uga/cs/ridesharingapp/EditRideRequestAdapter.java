@@ -38,7 +38,7 @@ public class EditRideRequestAdapter extends RecyclerView.Adapter<EditRideRequest
         holder.bind(rideRequest);
         holder.itemView.setOnClickListener(v -> {
             // 1) Build the AcceptRequestDialogFragment
-            AcceptRequestDialogFragment dlg = AcceptRequestDialogFragment.newInstance(
+            EditRequestDialogFragment dlg = EditRequestDialogFragment.newInstance(
                     holder.getAdapterPosition(),
                     rideRequest.getKey(),
                     rideRequest.getDate(),
