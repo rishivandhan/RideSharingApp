@@ -29,7 +29,7 @@ public class UnacceptedRidesActivity extends AppCompatActivity
         implements EditRequestDialogFragment.EditRideRequestDialogListener {
     private static final String DEBUG_TAG = "UnacceptedRidesActivity";
     private RecyclerView UnacceptedRidesView;
-    private RideRequestAdapter adapter;
+    private EditRideRequestAdapter adapter;
     private List<RideRequest> rideRequestList = new ArrayList<>();
     private FirebaseDatabase firebaseDatabase;
     private String userId;
@@ -51,7 +51,7 @@ public class UnacceptedRidesActivity extends AppCompatActivity
 
         UnacceptedRidesView = findViewById(R.id.UnacceptedRidesView);
         UnacceptedRidesView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RideRequestAdapter(rideRequestList, UnacceptedRidesActivity.this);
+        adapter = new EditRideRequestAdapter(rideRequestList, UnacceptedRidesActivity.this);
         UnacceptedRidesView.setAdapter(adapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
