@@ -133,7 +133,7 @@ public class RiderActivity extends AppCompatActivity
     }
 
     @Override
-    public void acceptDriverOffer(int position, DriveOffer driveOffer) {
+    public void acceptDriveOffer(int position, DriveOffer driveOffer) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference offerRef = firebaseDatabase.getReference("ride_offers").child(driveOffer.getKey());
 

@@ -66,6 +66,6 @@ public class AcceptOfferDialogFragment extends DialogFragment {
     }
 
     public interface AcceptDriveOfferDialogListener {
-        void acceptDriverOffer (int position, DriveOffer driveOffer);
+        void acceptDriveOffer (int position, DriveOffer driveOffer);
     }
 }
