@@ -56,7 +56,7 @@ public class UnacceptedRideOffers extends AppCompatActivity {
     }
 
     private void loadRideOffers() {
-        DatabaseReference userRideRequestsRef = firebaseDatabase.getReference("users/" + userId + "/ride_offers");
+        DatabaseReference userRideRequestsRef = firebaseDatabase.getReference("users/" + userId + "/created_ride_offers");
         Log.d(DEBUG_TAG, "loading ride offers...");
 
         userRideRequestsRef.get().addOnSuccessListener(snapshot -> {
@@ -69,13 +69,14 @@ public class UnacceptedRideOffers extends AppCompatActivity {
                     Boolean isAccepted = requestSnapshot.getValue(Boolean.class);
 
                     if (riderOfferId != null && Boolean.FALSE.equals(isAccepted)) {
-                        rideOfferIds.add(riderOfferId);
+                        rideOfferIds.add(requestSnapshot.getKey());
                     }
                 }
 
                 if (!rideOfferIds.isEmpty()) {
                     final int totalRideOffers = rideOfferIds.size();
                     final int[] OffersLoaded = {0};
+                    driveOfferList.clear();
 
                     for (String rideOfferId : rideOfferIds) {
                         DatabaseReference rideOfferRef = firebaseDatabase.getReference("ride_offers/" + rideOfferId);

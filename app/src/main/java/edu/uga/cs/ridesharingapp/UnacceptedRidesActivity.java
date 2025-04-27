@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class UnacceptedRidesActivity extends AppCompatActivity
-        implements EditRequestDialogFragment.EditRideRequestDialogListener {
+        implements EditRequestDialogFragment.EditRideRequestDialogListener{
     private static final String DEBUG_TAG = "UnacceptedRidesActivity";
     private RecyclerView UnacceptedRidesView;
     private EditRideRequestAdapter adapter;
@@ -110,7 +110,7 @@ public class UnacceptedRidesActivity extends AppCompatActivity
     }
 
     private void loadRideRequests() {
-        DatabaseReference userRideRequestsRef = firebaseDatabase.getReference("users/" + userId + "/ride_requests");
+        DatabaseReference userRideRequestsRef = firebaseDatabase.getReference("users/" + userId + "/created_ride_requests");
         Log.d(DEBUG_TAG, "loading ride requests...");
 
         userRideRequestsRef.get().addOnSuccessListener(snapshot -> {

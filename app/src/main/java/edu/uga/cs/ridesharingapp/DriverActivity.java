@@ -93,6 +93,12 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
             }
         });
 
+        ViewAcceptedRideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 
