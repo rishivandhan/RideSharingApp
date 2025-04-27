@@ -156,14 +156,29 @@ public class RiderActivity extends AppCompatActivity
 
         offerRef.updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-                    driveOffers.remove(position);
+                    String driverId = driveOffer.getDriverid();
+                    if (driverId != null && !driverId.isEmpty()) {
+                        DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
+                                .child(driverId)
+                                .child("ride_offers")
+                                .child(driveOffer.getKey());
 
-                    adapter.notifyItemRemoved(position);
-                    adapter.notifyItemRangeChanged(position, driveOffers.size());
+                        driverOfferRef.setValue(true)
+                                .addOnSuccessListener(aVoid2 -> {
+                                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+
+                                    driveOffers.remove(position);
+                                    adapter.notifyItemRemoved(position);
+                                    adapter.notifyItemRangeChanged(position, driveOffers.size());
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
+                                });
+                    } else {
+                        Log.e(DEBUG_TAG, "Driver ID is null or empty for the offer");
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to accept offer", Toast.LENGTH_SHORT).show();
                     Log.e(DEBUG_TAG, "Error updating ride offer", e);
                 });
     }
