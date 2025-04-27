@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RiderActivity extends AppCompatActivity
         implements CreateRequestDialogFragment.AddRideRequestDialogListener,
@@ -133,18 +134,25 @@ public class RiderActivity extends AppCompatActivity
     }
 
     @Override
-    public void acceptDriverOffer(int position, DriveOffer driveOffer) {
+    public void acceptDriveOffer(int position, DriveOffer driveOffer) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference offerRef = firebaseDatabase.getReference("ride_offers").child(driveOffer.getKey());
 
-        offerRef.child("accepted").setValue(true)
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("accepted", true);
+        updates.put("riderid", userID);
+
+        offerRef.updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Offer accepted successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                     driveOffers.remove(position);
+
                     adapter.notifyItemRemoved(position);
+                    adapter.notifyItemRangeChanged(position, driveOffers.size());
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(DEBUG_TAG, "Failed to accept offer", e);
+                    Toast.makeText(this, "Failed to accept offer", Toast.LENGTH_SHORT).show();
+                    Log.e(DEBUG_TAG, "Error updating ride offer", e);
                 });
     }
 }
