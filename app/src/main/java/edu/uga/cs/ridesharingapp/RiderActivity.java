@@ -101,6 +101,9 @@ public class RiderActivity extends AppCompatActivity
                     if(userID.equals(offer.getCreatorid())){
                         continue;
                     }
+                    if (offer.isAccepted()) {
+                        continue;
+                    }
                     if (offer != null){
                         offer.setKey(child.getKey());
                         driveOffers.add(offer);
