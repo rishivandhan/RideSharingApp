@@ -7,6 +7,33 @@
     android:layout_height="match_parent"
     tools:context=".DriverActivity">
 
+    <TextView
+        android:id="@+id/DriversPointsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Available Points: "
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toTopOf="@+id/CreateRideButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.41" />
+
+    <TextView
+        android:id="@+id/DriverUserPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="23dp"
+        android:hint="UserPoints"
+        app:layout_constraintBottom_toTopOf="@+id/CreateRideButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/DriversPointsTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/CreateRideButton"
         android:layout_width="wrap_content"
@@ -14,10 +41,10 @@
         android:text="Create Ride Offer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.063"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.084" />
 
     <Button
         android:id="@+id/ViewUncOfferButton"
@@ -26,10 +53,10 @@
         android:text="View My Unaccepted Ride Offers"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintVertical_bias="0.155" />
 
     <Button
         android:id="@+id/ViewAccRideButton"
@@ -38,10 +65,10 @@
         android:text="View My Accepted Rides"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.922"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.084" />
 
     <TextView
         android:id="@+id/offersTitleTextView"
@@ -53,7 +80,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ViewUncOfferButton"
-        app:layout_constraintVertical_bias="0.064" />
+        app:layout_constraintVertical_bias="0.023" />
+
+    <Button
+        android:id="@+id/driverLogoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toTopOf="@+id/ViewAccRideButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/AvailableRideRequestsView"

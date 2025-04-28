@@ -2,7 +2,9 @@ package edu.uga.cs.ridesharingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,9 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.credentials.ClearCredentialStateRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.ClearCredentialException;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class RiderActivity extends AppCompatActivity
         implements CreateRequestDialogFragment.AddRideRequestDialogListener,
@@ -39,8 +47,12 @@ public class RiderActivity extends AppCompatActivity
     private Button createRequestButton;
     private Button viewUnacceptedRequestsButton;
     private Button viewAcceptedRequestsButton;
+    private Button LogoutButton;
     private RecyclerView availableOffersView;
     private String userID;
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private CredentialManager credentialManager;
 
     private int userPoints = 0;
     private List<DriveOffer> driveOffers = new ArrayList<>();
@@ -67,6 +79,7 @@ public class RiderActivity extends AppCompatActivity
         createRequestButton = findViewById(R.id.CreateRequestButton);
         viewUnacceptedRequestsButton = findViewById(R.id.ViewUnacceptedRequestsButton);
         viewAcceptedRequestsButton = findViewById(R.id.ViewAcceptedRequestsButton);
+        LogoutButton = findViewById(R.id.RiderLogoutButton);
         availableOffersView = findViewById(R.id.AvailableOffersView);
 
 
@@ -101,6 +114,17 @@ public class RiderActivity extends AppCompatActivity
             uInfo.putString("UserID", UId);
             acceptedIntent.putExtras(uInfo);
             startActivity(acceptedIntent);
+        });
+
+        LogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+                Log.d("sign out Success", "Signed Out Successfully");
+                Intent intent = new Intent(RiderActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+
         });
 
         availableOffersView.setLayoutManager(new LinearLayoutManager(this));
@@ -223,6 +247,30 @@ public class RiderActivity extends AppCompatActivity
                 })
                 .addOnFailureListener(e -> {
                     Log.e(DEBUG_TAG, "Failed to fetch latest offer", e);
+                });
+    }
+
+
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // When a user signs out, clear the current user credential state from all credential providers.
+        ClearCredentialStateRequest clearRequest = new ClearCredentialStateRequest();
+        credentialManager.clearCredentialStateAsync(
+                clearRequest,
+                new CancellationSignal(),
+                Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<>() {
+                    @Override
+                    public void onResult(@NonNull Void result) {
+                        Log.d("Logout", "Logout status succeeded");
+
+                    }
+                    @Override
+                    public void onError(@NonNull ClearCredentialException e) {
+                        Log.d("Logout", "Logout failed for some reason");
+                    }
                 });
     }
 }

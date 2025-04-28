@@ -93,8 +93,13 @@ public class UserActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(UserActivity.this, DriverActivity.class);
                 Bundle uInfo = new Bundle();
+
                 String UId = UserInfo.getString("UserID");
+                int UserPoints = UserInfo.getInt("UserPoints");
+
                 uInfo.putString("UserID", UId);
+                uInfo.putInt("UserPoints", UserPoints);
+
                 intent.putExtras(uInfo);
                 startActivity(intent);
 

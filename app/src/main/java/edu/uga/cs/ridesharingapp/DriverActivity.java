@@ -4,9 +4,11 @@ import static edu.uga.cs.ridesharingapp.LoginFragment.DEBUG_TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,9 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.credentials.ClearCredentialStateRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.ClearCredentialException;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,14 +36,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class DriverActivity extends AppCompatActivity implements CreateRequestDialogFragment.AddRideOfferDialogListener, AcceptRequestDialogFragment.AcceptRideRequestDialogListener {
+    private TextView DriverPoints;
     private Button createRidebutton;
     private Button ViewUnacceptedRideButton;
     private Button ViewAcceptedRideButton;
+    private Button LogoutButton;
     private RecyclerView availableRideOffers;
     private String userID;
+    private int UserPoints;
     private AcceptRequestAdapter adapter;
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private CredentialManager credentialManager;
+
     List<RideRequest> rideRequests = new ArrayList<>();
 
     @Override
@@ -53,16 +68,21 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         Intent intent = getIntent();
         Bundle userInfo = intent.getExtras();
         userID = userInfo.getString("UserID");
+        UserPoints = userInfo.getInt("UserPoints");
 
+
+        DriverPoints = findViewById(R.id.DriverUserPoints);
         createRidebutton = findViewById(R.id.CreateRideButton);
         ViewUnacceptedRideButton = findViewById(R.id.ViewUncOfferButton);
         ViewAcceptedRideButton = findViewById(R.id.ViewAccRideButton);
         availableRideOffers = findViewById(R.id.AvailableRideRequestsView);
+        LogoutButton = findViewById(R.id.driverLogoutButton);
 
+        credentialManager = CredentialManager.create(this);
 
         adapter = new AcceptRequestAdapter(this, rideRequests);
 
-
+        DriverPoints.setText(Integer.toString(UserPoints));
 
         availableRideOffers.setLayoutManager(new LinearLayoutManager(this));
         availableRideOffers.setAdapter(adapter);
@@ -105,7 +125,19 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
             }
         });
 
+        LogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+                Log.d("sign out Success", "Signed Out Successfully");
+                Intent intent = new Intent(DriverActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+
+        });
+
     }
+
 
 
     public void loadAvailableRides() {
@@ -225,6 +257,31 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                 })
                 .addOnFailureListener(e -> {
                     Log.e(DEBUG_TAG, "Failed to fetch latest ride request", e);
+                });
+    }
+
+
+
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // When a user signs out, clear the current user credential state from all credential providers.
+        ClearCredentialStateRequest clearRequest = new ClearCredentialStateRequest();
+        credentialManager.clearCredentialStateAsync(
+                clearRequest,
+                new CancellationSignal(),
+                Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<>() {
+                    @Override
+                    public void onResult(@NonNull Void result) {
+                        Log.d("Logout", "Logout status succeeded");
+
+                    }
+                    @Override
+                    public void onError(@NonNull ClearCredentialException e) {
+                        Log.d("Logout", "Logout failed for some reason");
+                    }
                 });
     }
 

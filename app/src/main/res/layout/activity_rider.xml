@@ -34,6 +34,20 @@
         app:layout_constraintVertical_bias="0.615" />
 
     <Button
+        android:id="@+id/RiderLogoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Logout"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toTopOf="@+id/ViewAcceptedRequestsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.953"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
         android:id="@+id/CreateRequestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,7 +57,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.065" />
+        app:layout_constraintVertical_bias="0.109" />
 
     <Button
         android:id="@+id/ViewUnacceptedRequestsButton"
@@ -54,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.153" />
+        app:layout_constraintVertical_bias="0.18" />
 
     <Button
         android:id="@+id/ViewAcceptedRequestsButton"
@@ -66,7 +80,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/CreateRequestButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.065" />
+        app:layout_constraintVertical_bias="0.109" />
 
     <TextView
         android:id="@+id/OffersTitleTextView"
@@ -79,7 +93,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ViewUnacceptedRequestsButton"
-        app:layout_constraintVertical_bias="0.051" />
+        app:layout_constraintVertical_bias="0.028" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/AvailableOffersView"
