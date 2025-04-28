@@ -23,7 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UnacceptedRidesActivity extends AppCompatActivity
         implements EditRequestDialogFragment.EditRideRequestDialogListener{
@@ -63,26 +65,25 @@ public class UnacceptedRidesActivity extends AppCompatActivity
         if (action == EditRequestDialogFragment.SAVE)
         {
             adapter.notifyDataSetChanged();
-            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_requests")
+            DatabaseReference dRef = firebaseDatabase.getReference()
+                    .child("ride_requests")
                     .child(rideRequest.getKey());
 
-            dRef.addListenerForSingleValueEvent( new ValueEventListener() {
-                @Override
-                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().setValue(rideRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getApplicationContext(), "Ride Request Updated", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+            // Prepare a Map<String, Object> for the fields to update
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("startLocation", rideRequest.getStartLocation());
+            updates.put("endLocation", rideRequest.getEndLocation());
+            updates.put("date", rideRequest.getDate());
 
-                @Override
-                public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Toast.makeText(getApplicationContext(), "Failed to Update " + rideRequest.getKey(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            dRef.updateChildren(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getApplicationContext(), "Ride Request Updated", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getApplicationContext(), "Failed to Update " + rideRequest.getKey(),
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(DEBUG_TAG, "Error updating ride request", e);
+                    });
         } else if (action == EditRequestDialogFragment.DELETE)
         {
             rideRequestList.remove(position);
