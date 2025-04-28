@@ -28,7 +28,6 @@ public class AcceptRequestAdapter extends RecyclerView.Adapter<AcceptRequestAdap
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // inflate the same item‐layout you use for ride requests
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.viewholder_drive_request, parent, false);
         return new RequestViewHolder(view);
@@ -40,7 +39,6 @@ public class AcceptRequestAdapter extends RecyclerView.Adapter<AcceptRequestAdap
         holder.bind(request);
 
         holder.itemView.setOnClickListener(v -> {
-            // launch your accept‐request dialog
             AcceptRequestDialogFragment dialog = AcceptRequestDialogFragment.newInstance(
                     position,
                     request.getKey(),
@@ -67,7 +65,6 @@ public class AcceptRequestAdapter extends RecyclerView.Adapter<AcceptRequestAdap
 
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
-            // make sure these IDs match your viewholder_ride_request.xml
             startView = itemView.findViewById(R.id.DrivertextViewStartLoc);
             endView   = itemView.findViewById(R.id.DrivertextViewEndLoc);
             dateView  = itemView.findViewById(R.id.DrivertextViewDateView);

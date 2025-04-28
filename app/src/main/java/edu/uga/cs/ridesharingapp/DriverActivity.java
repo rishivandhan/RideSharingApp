@@ -113,6 +113,9 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                     if(userID.equals(req.getCreatorid())){
                         continue;
                     }
+                    if (req.isAccepted()) {
+                        continue;
+                    }
                     if (req != null){
                         req.setKey(child.getKey());
                         rideRequests.add(req);
@@ -201,9 +204,6 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                                     driverOfferRef.setValue(true)
                                             .addOnSuccessListener(aVoid2 -> {
                                                 Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-                                                rideRequests.remove(position);
-                                                adapter.notifyItemRemoved(position);
-                                                adapter.notifyItemRangeChanged(position, rideRequests.size());
                                             })
                                             .addOnFailureListener(e -> {
                                                 Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
