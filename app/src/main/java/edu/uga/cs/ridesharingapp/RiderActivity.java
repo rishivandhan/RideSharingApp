@@ -82,6 +82,7 @@ public class RiderActivity extends AppCompatActivity
         LogoutButton = findViewById(R.id.RiderLogoutButton);
         availableOffersView = findViewById(R.id.AvailableOffersView);
 
+        credentialManager = CredentialManager.create(this);
 
         Points.setText(Integer.toString(userPoints));
         createRequestButton.setOnClickListener(v -> {
