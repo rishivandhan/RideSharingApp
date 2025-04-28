@@ -1,12 +1,10 @@
 package edu.uga.cs.ridesharingapp;
 
-import static edu.uga.cs.ridesharingapp.LoginFragment.DEBUG_TAG;
-
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,11 +32,17 @@ public class RiderActivity extends AppCompatActivity
         implements CreateRequestDialogFragment.AddRideRequestDialogListener,
         AcceptOfferDialogFragment.AcceptDriveOfferDialogListener {
     private static final String DEBUG_TAG = "RiderActivity";
+    private static final int RequestCost = 50;
+
+
+    private TextView Points;
     private Button createRequestButton;
     private Button viewUnacceptedRequestsButton;
     private Button viewAcceptedRequestsButton;
     private RecyclerView availableOffersView;
     private String userID;
+
+    private int userPoints = 0;
     private List<DriveOffer> driveOffers = new ArrayList<>();
     private AcceptDriveOfferAdapter adapter;
 
@@ -56,15 +60,29 @@ public class RiderActivity extends AppCompatActivity
         Intent intent = getIntent();
         Bundle UserInfo = intent.getExtras();
         userID = UserInfo.getString("UserID");
+        userPoints = UserInfo.getInt("UserPoints");
 
+        Points = findViewById(R.id.Points);
+        Log.e("RiderActivity", "user points: " + userPoints);
         createRequestButton = findViewById(R.id.CreateRequestButton);
         viewUnacceptedRequestsButton = findViewById(R.id.ViewUnacceptedRequestsButton);
         viewAcceptedRequestsButton = findViewById(R.id.ViewAcceptedRequestsButton);
         availableOffersView = findViewById(R.id.AvailableOffersView);
 
+
+        Points.setText(Integer.toString(userPoints));
         createRequestButton.setOnClickListener(v -> {
+
+
+            if(userPoints < RequestCost){
+                int needed = RequestCost - userPoints;
+                Toast.makeText(this, "You need " + RequestCost + " points to make a request. You are " + needed + " points short.", Toast.LENGTH_LONG).show();
+                return;
+            }
             CreateRequestDialogFragment dialogFragment = new CreateRequestDialogFragment();
             dialogFragment.show(getSupportFragmentManager(), "CreateRequestDialog");
+
+
         });
 
         viewUnacceptedRequestsButton.setOnClickListener(v -> {
