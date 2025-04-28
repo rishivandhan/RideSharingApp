@@ -200,11 +200,12 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                     offerRef.updateChildren(updates)
                             .addOnSuccessListener(aVoid -> {
                                 String riderid = rideRequest.getCreatorid();
+                                String requestId = rideRequest.getKey();
                                 if (riderid != null && !riderid.isEmpty()) {
                                     DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
                                             .child(riderid)
                                             .child("created_ride_requests")
-                                            .child(rideRequest.getKey());
+                                            .child(requestId);
 
                                     driverOfferRef.setValue(true)
                                             .addOnSuccessListener(aVoid2 -> {
