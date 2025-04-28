@@ -42,14 +42,14 @@ public class DriveOfferAdapter extends RecyclerView.Adapter<DriveOfferAdapter.Dr
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditRequestDialogFragment editRequestDialogFragment = EditRequestDialogFragment.newInstance(
+                EditOfferDialogFragment editOfferDialogFragment = EditOfferDialogFragment.newInstance(
                         holder.getAdapterPosition(),
                         driveOffer.getKey(),
                         driveOffer.getDate(),
                         driveOffer.getStartLocation(),
                         driveOffer.getEndLocation()
                 );
-                editRequestDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(), null);
+                editOfferDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(), null);
             }
         });
     }

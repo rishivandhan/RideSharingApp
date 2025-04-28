@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,21 +14,25 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class UnacceptedRideOffers extends AppCompatActivity {
+public class UnacceptedRideOffers extends AppCompatActivity implements EditOfferDialogFragment.EditOfferDialogListener {
     private static final String DEBUG_TAG = "UnacceptedRideOffersActivity";
     private RecyclerView unacceptedOffers;
     private DriveOfferAdapter adapter;
     private List<DriveOffer> driveOfferList = new ArrayList<>();
     private FirebaseDatabase firebaseDatabase;
     private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +51,7 @@ public class UnacceptedRideOffers extends AppCompatActivity {
 
         unacceptedOffers = findViewById(R.id.ViewUnacceptedOffers);
         unacceptedOffers.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DriveOfferAdapter(UnacceptedRideOffers.this, driveOfferList );
+        adapter = new DriveOfferAdapter(UnacceptedRideOffers.this, driveOfferList);
         unacceptedOffers.setAdapter(adapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -120,5 +125,54 @@ public class UnacceptedRideOffers extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void updateOffer(int position, DriveOffer offer, int action) {
+        if (action == EditRequestDialogFragment.SAVE)
+        {
+            adapter.notifyDataSetChanged();
+            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_offers")
+                    .child(offer.getKey());
 
+            dRef.addListenerForSingleValueEvent( new ValueEventListener() {
+                @Override
+                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
+                    dataSnapshot.getRef().setValue(offer).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Ride Offer Updated", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled( @NonNull DatabaseError databaseError ) {
+                    Toast.makeText(getApplicationContext(), "Failed to Update " + offer.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (action == EditRequestDialogFragment.DELETE)
+        {
+            driveOfferList.remove(position);
+            adapter.notifyDataSetChanged();
+            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_offer")
+                    .child(offer.getKey());
+
+            dRef.addListenerForSingleValueEvent( new ValueEventListener() {
+                @Override
+                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
+                    dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Ride Offer Deleted", Toast.LENGTH_SHORT).show();                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled( @NonNull DatabaseError databaseError ) {
+                    Toast.makeText(getApplicationContext(), "Failed to delete Ride Request at " + offer.getKey(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 }
