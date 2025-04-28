@@ -28,7 +28,6 @@ public class AcceptRequestAdapter extends RecyclerView.Adapter<AcceptRequestAdap
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // inflate the same item‐layout you use for ride requests
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.viewholder_drive_request, parent, false);
         return new RequestViewHolder(view);
