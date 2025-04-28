@@ -174,37 +174,51 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference offerRef = firebaseDatabase.getReference("ride_requests").child(rideRequest.getKey());
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("accepted", true);
-        updates.put("driverid", userID);
-
-        offerRef.updateChildren(updates)
-                .addOnSuccessListener(aVoid -> {
-                    String riderid = rideRequest.getCreatorid();
-                    if (riderid != null && !riderid.isEmpty()) {
-                        DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
-                                .child(riderid)
-                                .child("created_ride_requests")
-                                .child(rideRequest.getKey());
-
-                        driverOfferRef.setValue(true)
-                                .addOnSuccessListener(aVoid2 -> {
-                                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-                                    rideRequests.remove(position);
-
-                                    adapter.notifyItemRemoved(position);
-                                    adapter.notifyItemRangeChanged(position, rideRequests.size());
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
-                                });
-                    } else {
-                        Log.e(DEBUG_TAG, "Driver ID is null or empty for the offer");
+        offerRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    RideRequest latestRequest = snapshot.getValue(RideRequest.class);
+                    if (latestRequest != null) {
+                        // Update all fields of rideRequest except key
+                        rideRequest.setAccepted(latestRequest.isAccepted());
+                        rideRequest.setCreatorid(latestRequest.getCreatorid());
+                        rideRequest.setDriverid(latestRequest.getDriverid());
                     }
+
+                    // Now proceed to update accepted and driverid
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("accepted", true);
+                    updates.put("driverid", userID);
+
+                    offerRef.updateChildren(updates)
+                            .addOnSuccessListener(aVoid -> {
+                                String riderid = rideRequest.getCreatorid();
+                                if (riderid != null && !riderid.isEmpty()) {
+                                    DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
+                                            .child(riderid)
+                                            .child("created_ride_requests")
+                                            .child(rideRequest.getKey());
+
+                                    driverOfferRef.setValue(true)
+                                            .addOnSuccessListener(aVoid2 -> {
+                                                Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                                                rideRequests.remove(position);
+                                                adapter.notifyItemRemoved(position);
+                                                adapter.notifyItemRangeChanged(position, rideRequests.size());
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
+                                            });
+                                } else {
+                                    Log.e(DEBUG_TAG, "Driver ID is null or empty for the offer");
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to accept offer", Toast.LENGTH_SHORT).show();
+                                Log.e(DEBUG_TAG, "Error updating ride offer", e);
+                            });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to accept offer", Toast.LENGTH_SHORT).show();
-                    Log.e(DEBUG_TAG, "Error updating ride offer", e);
+                    Log.e(DEBUG_TAG, "Failed to fetch latest ride request", e);
                 });
     }
 

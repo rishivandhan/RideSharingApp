@@ -165,36 +165,51 @@ public class RiderActivity extends AppCompatActivity
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference offerRef = firebaseDatabase.getReference("ride_offers").child(driveOffer.getKey());
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("accepted", true);
-        updates.put("riderid", userID);
-
-        offerRef.updateChildren(updates)
-                .addOnSuccessListener(aVoid -> {
-                    String driverId = driveOffer.getCreatorid();
-                    String offerId = driveOffer.getKey();
-                    if (driverId != null && !driverId.isEmpty()) {
-                        DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
-                                .child(driverId)
-                                .child("created_ride_offers")
-                                .child(offerId);
-
-                        driverOfferRef.setValue(true)
-                                .addOnSuccessListener(aVoid2 -> {
-                                    driveOffers.remove(position);
-                                    adapter.notifyItemRemoved(position);
-                                    adapter.notifyItemRangeChanged(position, driveOffers.size());
-                                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
-                                });
-                    } else {
-                        Log.e(DEBUG_TAG, "Driver ID is null or empty for the offer");
+        offerRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    DriveOffer latestOffer = snapshot.getValue(DriveOffer.class);
+                    if (latestOffer != null) {
+                        driveOffer.setAccepted(latestOffer.isAccepted());
+                        driveOffer.setCreatorid(latestOffer.getCreatorid());
+                        driveOffer.setRiderid(latestOffer.getRiderid());
                     }
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("accepted", true);
+                    updates.put("riderid", userID);
+
+                    offerRef.updateChildren(updates)
+                            .addOnSuccessListener(aVoid -> {
+                                String driverId = driveOffer.getCreatorid();
+                                String offerId = driveOffer.getKey();
+                                if (driverId != null && !driverId.isEmpty()) {
+                                    DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
+                                            .child(driverId)
+                                            .child("created_ride_offers")
+                                            .child(offerId);
+
+                                    driverOfferRef.setValue(true)
+                                            .addOnSuccessListener(aVoid2 -> {
+                                                /*
+                                                driveOffers.remove(position);
+                                                adapter.notifyItemRemoved(position);
+                                                adapter.notifyItemRangeChanged(position, driveOffers.size());
+                                                */
+                                                Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
+                                            });
+                                } else {
+                                    Log.e(DEBUG_TAG, "Driver ID is null or empty for the offer");
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(DEBUG_TAG, "Error updating ride offer", e);
+                            });
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(DEBUG_TAG, "Error updating ride offer", e);
+                    Log.e(DEBUG_TAG, "Failed to fetch latest offer", e);
                 });
     }
 }
