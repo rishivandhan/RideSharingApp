@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +34,20 @@ public class AcceptedDriveOfferAdapter extends RecyclerView.Adapter<AcceptedDriv
     public void onBindViewHolder(@NonNull OfferViewHolder holder, int position) {
         DriveOffer offer = acceptedDriveOffers.get(position);
         holder.bind(offer);
+
+        holder.itemView.setOnClickListener(v -> {
+            ConfirmDriveOfferDialogFragment dialogFragment = ConfirmDriveOfferDialogFragment.newInstance(
+                    position,
+                    offer.getDate(),
+                    offer.getKey(),
+                    offer.getStartLocation(),
+                    offer.getEndLocation()
+            );
+            dialogFragment.show(
+                    ((AppCompatActivity) context).getSupportFragmentManager(),
+                    "ConfirmOfferDialog"
+            );
+        });
     }
 
     @Override
