@@ -74,7 +74,7 @@ public class UnacceptedRideOffers extends AppCompatActivity implements EditOffer
                     Boolean isAccepted = requestSnapshot.getValue(Boolean.class);
 
                     if (riderOfferId != null && Boolean.FALSE.equals(isAccepted)) {
-                        rideOfferIds.add(requestSnapshot.getKey());
+                        rideOfferIds.add(riderOfferId);
                     }
                 }
 
