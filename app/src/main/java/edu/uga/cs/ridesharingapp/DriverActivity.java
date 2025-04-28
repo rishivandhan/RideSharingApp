@@ -96,7 +96,12 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         ViewAcceptedRideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent acceptedIntent = new Intent(DriverActivity.this, AcceptedDriveOffersActivity.class);
+                Bundle uInfo = new Bundle();
+                String UId = userInfo.getString("UserID");
+                uInfo.putString("UserID", UId);
+                acceptedIntent.putExtras(uInfo);
+                startActivity(acceptedIntent);
             }
         });
 
