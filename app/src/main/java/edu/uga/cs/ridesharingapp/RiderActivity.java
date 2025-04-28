@@ -172,19 +172,19 @@ public class RiderActivity extends AppCompatActivity
         offerRef.updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
                     String driverId = driveOffer.getCreatorid();
+                    String offerId = driveOffer.getKey();
                     if (driverId != null && !driverId.isEmpty()) {
                         DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
                                 .child(driverId)
                                 .child("created_ride_offers")
-                                .child(driveOffer.getKey());
+                                .child(offerId);
 
                         driverOfferRef.setValue(true)
                                 .addOnSuccessListener(aVoid2 -> {
-                                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-
                                     driveOffers.remove(position);
                                     adapter.notifyItemRemoved(position);
                                     adapter.notifyItemRangeChanged(position, driveOffers.size());
+                                    Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e(DEBUG_TAG, "Error updating driver's ride_offers list", e);
