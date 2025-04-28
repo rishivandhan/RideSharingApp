@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +34,20 @@ public class AcceptedRideRequestAdapter extends RecyclerView.Adapter<AcceptedRid
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
         RideRequest request = acceptedRideRequests.get(position);
         holder.bind(request);
+
+        holder.itemView.setOnClickListener(v -> {
+            ConfirmRideRequestDialogFragment dialogFragment = ConfirmRideRequestDialogFragment.newInstance(
+                    position,
+                    request.getDate(),
+                    request.getKey(),
+                    request.getStartLocation(),
+                    request.getEndLocation()
+            );
+            dialogFragment.show(
+                    ((AppCompatActivity) context).getSupportFragmentManager(),
+                    "ConfirmRequestDialog"
+            );
+        });
     }
 
     @Override
