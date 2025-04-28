@@ -154,7 +154,7 @@ public class UnacceptedRideOffers extends AppCompatActivity implements EditOffer
         {
             driveOfferList.remove(position);
             adapter.notifyDataSetChanged();
-            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_offer")
+            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_offers")
                     .child(offer.getKey());
 
             dRef.addListenerForSingleValueEvent( new ValueEventListener() {
