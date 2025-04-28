@@ -1,4 +1,0 @@
-package edu.uga.cs.ridesharingapp;
-
-public class AcceptRideRequestAdapter {
-}

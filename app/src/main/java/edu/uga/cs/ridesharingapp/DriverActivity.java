@@ -36,7 +36,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
     private Button ViewAcceptedRideButton;
     private RecyclerView availableRideOffers;
     private String userID;
-    private EditRideRequestAdapter adapter;
+    private AcceptRequestAdapter adapter;
     List<RideRequest> rideRequests = new ArrayList<>();
 
     @Override
@@ -60,7 +60,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         availableRideOffers = findViewById(R.id.AvailableRideRequestsView);
 
 
-        adapter = new EditRideRequestAdapter(this, rideRequests);
+        adapter = new AcceptRequestAdapter(this, rideRequests);
 
 
 
