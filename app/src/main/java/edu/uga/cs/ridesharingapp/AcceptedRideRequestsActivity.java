@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AcceptedRideRequestsActivity extends AppCompatActivity {
@@ -74,6 +75,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity {
                     acceptedRideRequests.add(rideRequest);
                 }
             }
+            Collections.sort(acceptedRideRequests, (r1, r2) -> Long.compare(r1.getDate(), r2.getDate()));
             acceptedRideRequestAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to load accepted ride requests", e));
     }
@@ -90,6 +92,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity {
                     acceptedDriveOffers.add(driveOffer);
                 }
             }
+            Collections.sort(acceptedDriveOffers, (r1, r2) -> Long.compare(r1.getDate(), r2.getDate()));
             acceptedDriveOfferAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to load accepted drive offers", e));
     }
