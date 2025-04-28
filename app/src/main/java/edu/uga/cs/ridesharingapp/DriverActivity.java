@@ -96,7 +96,12 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         ViewAcceptedRideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent acceptedIntent = new Intent(DriverActivity.this, AcceptedDriveOffersActivity.class);
+                Bundle uInfo = new Bundle();
+                String UId = userInfo.getString("UserID");
+                uInfo.putString("UserID", UId);
+                acceptedIntent.putExtras(uInfo);
+                startActivity(acceptedIntent);
             }
         });
 
@@ -195,11 +200,12 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
                     offerRef.updateChildren(updates)
                             .addOnSuccessListener(aVoid -> {
                                 String riderid = rideRequest.getCreatorid();
+                                String requestId = rideRequest.getKey();
                                 if (riderid != null && !riderid.isEmpty()) {
                                     DatabaseReference driverOfferRef = firebaseDatabase.getReference("users")
                                             .child(riderid)
                                             .child("created_ride_requests")
-                                            .child(rideRequest.getKey());
+                                            .child(requestId);
 
                                     driverOfferRef.setValue(true)
                                             .addOnSuccessListener(aVoid2 -> {

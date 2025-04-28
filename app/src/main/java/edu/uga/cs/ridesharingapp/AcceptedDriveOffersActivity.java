@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AcceptedRideRequestsActivity extends AppCompatActivity
+public class AcceptedDriveOffersActivity extends AppCompatActivity
         implements ConfirmRideRequestDialogFragment.ConfirmRideRequestDialogListener,
         ConfirmDriveOfferDialogFragment.ConfirmDriveOfferDialogListener {
     private static final String DEBUG_TAG = "AcceptedRideRequestsActivity";
@@ -76,7 +76,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
             for (DataSnapshot rideSnapshot : snapshot.getChildren()) {
                 RideRequest rideRequest = rideSnapshot.getValue(RideRequest.class);
 
-                if (rideRequest != null && rideRequest.isAccepted() && userId.equals(rideRequest.getCreatorid()) && Boolean.FALSE.equals(rideRequest.isRiderConfirm())) {
+                if (rideRequest != null && rideRequest.isAccepted() && userId.equals(rideRequest.getDriverid()) && Boolean.FALSE.equals(rideRequest.isDriverConfirm())) {
                     acceptedRideRequests.add(rideRequest);
                 }
             }
@@ -93,7 +93,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
             for (DataSnapshot offerSnapshot : snapshot.getChildren()) {
                 DriveOffer driveOffer = offerSnapshot.getValue(DriveOffer.class);
 
-                if (driveOffer != null && driveOffer.isAccepted() && userId.equals(driveOffer.getRiderid()) && Boolean.FALSE.equals(driveOffer.isRiderConfirm())) {
+                if (driveOffer != null && driveOffer.isAccepted() && userId.equals(driveOffer.getCreatorid()) && Boolean.FALSE.equals(driveOffer.isDriverConfirm())) {
                     acceptedDriveOffers.add(driveOffer);
                 }
             }
@@ -114,12 +114,12 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
                         rideRequest.setAccepted(latestRequest.isAccepted());
                         rideRequest.setCreatorid(latestRequest.getCreatorid());
                         rideRequest.setDriverid(latestRequest.getDriverid());
-                        rideRequest.setDriverConfirm(latestRequest.isDriverConfirm());
-                        rideRequest.setRiderConfirm(true);
+                        rideRequest.setDriverConfirm(true);
+                        rideRequest.setRiderConfirm(latestRequest.isRiderConfirm());
                     }
 
                     Map<String, Object> updates = new HashMap<>();
-                    updates.put("riderConfirm", true);
+                    updates.put("driverConfirm", true);
 
                     requestRef.updateChildren(updates)
                             .addOnSuccessListener(aVoid -> {
@@ -160,7 +160,6 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
                                     }
                                 }
 
-                                acceptedRideRequestAdapter.notifyDataSetChanged();
                                 Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
@@ -184,12 +183,12 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
                         driveOffer.setAccepted(latestRequest.isAccepted());
                         driveOffer.setCreatorid(latestRequest.getCreatorid());
                         driveOffer.setRiderid(latestRequest.getRiderid());
-                        driveOffer.setDriverConfirm(latestRequest.isDriverConfirm());
-                        driveOffer.setRiderConfirm(true);
+                        driveOffer.setDriverConfirm(true);
+                        driveOffer.setRiderConfirm(latestRequest.isRiderConfirm());
                     }
 
                     Map<String, Object> updates = new HashMap<>();
-                    updates.put("riderConfirm", true);
+                    updates.put("driverConfirm", true);
 
                     requestRef.updateChildren(updates)
                             .addOnSuccessListener(aVoid -> {
@@ -230,7 +229,6 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
                                     }
                                 }
 
-                                acceptedDriveOfferAdapter.notifyDataSetChanged();
                                 Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
