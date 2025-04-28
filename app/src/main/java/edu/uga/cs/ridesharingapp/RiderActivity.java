@@ -190,11 +190,6 @@ public class RiderActivity extends AppCompatActivity
 
                                     driverOfferRef.setValue(true)
                                             .addOnSuccessListener(aVoid2 -> {
-                                                /*
-                                                driveOffers.remove(position);
-                                                adapter.notifyItemRemoved(position);
-                                                adapter.notifyItemRangeChanged(position, driveOffers.size());
-                                                */
                                                 Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                                             })
                                             .addOnFailureListener(e -> {
