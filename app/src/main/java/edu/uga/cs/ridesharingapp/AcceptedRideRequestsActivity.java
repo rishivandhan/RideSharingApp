@@ -160,6 +160,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
                                     }
                                 }
 
+                                acceptedRideRequestAdapter.notifyDataSetChanged();
                                 Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
@@ -229,6 +230,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
                                     }
                                 }
 
+                                acceptedDriveOfferAdapter.notifyDataSetChanged();
                                 Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
