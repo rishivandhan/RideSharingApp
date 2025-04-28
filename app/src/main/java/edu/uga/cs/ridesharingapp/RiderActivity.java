@@ -3,6 +3,7 @@ package edu.uga.cs.ridesharingapp;
 import static edu.uga.cs.ridesharingapp.LoginFragment.DEBUG_TAG;
 
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -73,6 +74,15 @@ public class RiderActivity extends AppCompatActivity
             uInfo.putString("UserID", UId);
             unacceptedIntent.putExtras(uInfo);
             startActivity(unacceptedIntent);
+        });
+
+        viewAcceptedRequestsButton.setOnClickListener(v -> {
+            Intent acceptedIntent = new Intent(RiderActivity.this, AcceptedRideRequestsActivity.class);
+            Bundle uInfo = new Bundle();
+            String UId = UserInfo.getString("UserID");
+            uInfo.putString("UserID", UId);
+            acceptedIntent.putExtras(uInfo);
+            startActivity(acceptedIntent);
         });
 
         availableOffersView.setLayoutManager(new LinearLayoutManager(this));
