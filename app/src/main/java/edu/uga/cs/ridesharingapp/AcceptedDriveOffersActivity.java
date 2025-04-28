@@ -202,9 +202,9 @@ public class AcceptedDriveOffersActivity extends AppCompatActivity
                                         DatabaseReference riderRef = firebaseDatabase.getReference("users").child(riderId);
                                         DatabaseReference driverRef = firebaseDatabase.getReference("users").child(driverId);
 
-                                        DatabaseReference driverOfferRef = riderRef.child("created_ride_offers").child(driveOffer.getKey());
+                                        DatabaseReference driverOfferRef = driverRef.child("created_ride_offers").child(driveOffer.getKey());
                                         driverOfferRef.removeValue()
-                                                .addOnSuccessListener(aVoid2 -> Log.d(DEBUG_TAG, "Ride offer removed from rider's created_ride_offers"))
+                                                .addOnSuccessListener(aVoid2 -> Log.d(DEBUG_TAG, "Ride offer removed from driver's created_ride_offers"))
                                                 .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to remove ride offer from rider", e));
 
                                         riderRef.child("points").get()
