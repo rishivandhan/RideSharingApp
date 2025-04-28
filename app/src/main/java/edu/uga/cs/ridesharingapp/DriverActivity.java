@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class DriverActivity extends AppCompatActivity implements CreateRequestDialogFragment.AddRideOfferDialogListener, AcceptRequestDialogFragment.AcceptRideRequestDialogListener {
-    private TextView DriverPoints;
+
     private Button createRidebutton;
     private Button ViewUnacceptedRideButton;
     private Button ViewAcceptedRideButton;
@@ -71,7 +71,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
         UserPoints = userInfo.getInt("UserPoints");
 
 
-        DriverPoints = findViewById(R.id.DriverUserPoints);
+
         createRidebutton = findViewById(R.id.CreateRideButton);
         ViewUnacceptedRideButton = findViewById(R.id.ViewUncOfferButton);
         ViewAcceptedRideButton = findViewById(R.id.ViewAccRideButton);
@@ -82,7 +82,7 @@ public class DriverActivity extends AppCompatActivity implements CreateRequestDi
 
         adapter = new AcceptRequestAdapter(this, rideRequests);
 
-        DriverPoints.setText(Integer.toString(UserPoints));
+
 
         availableRideOffers.setLayoutManager(new LinearLayoutManager(this));
         availableRideOffers.setAdapter(adapter);

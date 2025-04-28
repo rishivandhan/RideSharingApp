@@ -7,32 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".RiderActivity">
 
-    <TextView
-        android:id="@+id/Points"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="points"
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/CreateRequestButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.008"
-        app:layout_constraintStart_toEndOf="@+id/PointsTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.615" />
-
-    <TextView
-        android:id="@+id/PointsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Available Points: "
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/CreateRequestButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.053"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.615" />
-
     <Button
         android:id="@+id/RiderLogoutButton"
         android:layout_width="wrap_content"

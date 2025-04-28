@@ -43,7 +43,7 @@ public class RiderActivity extends AppCompatActivity
     private static final int RequestCost = 50;
 
 
-    private TextView Points;
+
     private Button createRequestButton;
     private Button viewUnacceptedRequestsButton;
     private Button viewAcceptedRequestsButton;
@@ -74,7 +74,7 @@ public class RiderActivity extends AppCompatActivity
         userID = UserInfo.getString("UserID");
         userPoints = UserInfo.getInt("UserPoints");
 
-        Points = findViewById(R.id.Points);
+
         Log.e("RiderActivity", "user points: " + userPoints);
         createRequestButton = findViewById(R.id.CreateRequestButton);
         viewUnacceptedRequestsButton = findViewById(R.id.ViewUnacceptedRequestsButton);
@@ -84,7 +84,7 @@ public class RiderActivity extends AppCompatActivity
 
         credentialManager = CredentialManager.create(this);
 
-        Points.setText(Integer.toString(userPoints));
+
         createRequestButton.setOnClickListener(v -> {
 
 

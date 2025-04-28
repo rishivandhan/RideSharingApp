@@ -7,32 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".DriverActivity">
 
-    <TextView
-        android:id="@+id/DriversPointsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Available Points: "
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/CreateRideButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.026"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47" />
-
-    <TextView
-        android:id="@+id/DriverUserPoints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="points"
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/CreateRideButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/DriversPointsTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47" />
-
     <Button
         android:id="@+id/CreateRideButton"
         android:layout_width="wrap_content"

@@ -23,7 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UnacceptedRideOffers extends AppCompatActivity implements EditOfferDialogFragment.EditOfferDialogListener {
     private static final String DEBUG_TAG = "UnacceptedRideOffersActivity";
@@ -130,26 +132,25 @@ public class UnacceptedRideOffers extends AppCompatActivity implements EditOffer
         if (action == EditRequestDialogFragment.SAVE)
         {
             adapter.notifyDataSetChanged();
-            DatabaseReference dRef = firebaseDatabase.getReference().child("ride_offers")
+            DatabaseReference dRef = firebaseDatabase.getReference()
+                    .child("ride_offers")
                     .child(offer.getKey());
 
-            dRef.addListenerForSingleValueEvent( new ValueEventListener() {
-                @Override
-                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().setValue(offer).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getApplicationContext(), "Ride Offer Updated", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+            // Prepare a Map<String, Object> for the fields to update
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("startLocation", offer.getStartLocation());
+            updates.put("endLocation", offer.getEndLocation());
+            updates.put("date", offer.getDate());
 
-                @Override
-                public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Toast.makeText(getApplicationContext(), "Failed to Update " + offer.getKey(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            dRef.updateChildren(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getApplicationContext(), "Ride offer Updated", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getApplicationContext(), "Failed to Update " + offer.getKey(),
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(DEBUG_TAG, "Error updating ride request", e);
+                    });
         } else if (action == EditRequestDialogFragment.DELETE)
         {
             driveOfferList.remove(position);
