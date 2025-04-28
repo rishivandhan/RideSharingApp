@@ -2,6 +2,8 @@ package edu.uga.cs.ridesharingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +13,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AcceptedDriveOffersActivity extends AppCompatActivity
         implements ConfirmRideRequestDialogFragment.ConfirmRideRequestDialogListener,
@@ -59,5 +66,178 @@ public class AcceptedDriveOffersActivity extends AppCompatActivity
 
         loadAcceptedRideRequests();
         loadAcceptedDriveOffers();
+    }
+
+    private void loadAcceptedRideRequests() {
+        DatabaseReference requestsRef = firebaseDatabase.getReference("ride_requests");
+
+        requestsRef.get().addOnSuccessListener(snapshot -> {
+            acceptedRideRequests.clear();
+            for (DataSnapshot rideSnapshot : snapshot.getChildren()) {
+                RideRequest rideRequest = rideSnapshot.getValue(RideRequest.class);
+
+                if (rideRequest != null && rideRequest.isAccepted() && userId.equals(rideRequest.getDriverid()) && Boolean.FALSE.equals(rideRequest.isDriverConfirm())) {
+                    acceptedRideRequests.add(rideRequest);
+                }
+            }
+            Collections.sort(acceptedRideRequests, (r1, r2) -> Long.compare(r1.getDate(), r2.getDate()));
+            acceptedRideRequestAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to load accepted ride requests", e));
+    }
+
+    private void loadAcceptedDriveOffers() {
+        DatabaseReference offersRef = firebaseDatabase.getReference("ride_offers");
+
+        offersRef.get().addOnSuccessListener(snapshot -> {
+            acceptedDriveOffers.clear();
+            for (DataSnapshot offerSnapshot : snapshot.getChildren()) {
+                DriveOffer driveOffer = offerSnapshot.getValue(DriveOffer.class);
+
+                if (driveOffer != null && driveOffer.isAccepted() && userId.equals(driveOffer.getCreatorid()) && Boolean.FALSE.equals(driveOffer.isDriverConfirm())) {
+                    acceptedDriveOffers.add(driveOffer);
+                }
+            }
+            Collections.sort(acceptedDriveOffers, (r1, r2) -> Long.compare(r1.getDate(), r2.getDate()));
+            acceptedDriveOfferAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to load accepted drive offers", e));
+    }
+
+    @Override
+    public void confirmRideRequest(int position, RideRequest rideRequest) {
+        DatabaseReference requestRef = firebaseDatabase.getReference("ride_requests").child(rideRequest.getKey());
+
+        requestRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    RideRequest latestRequest = snapshot.getValue(RideRequest.class);
+                    if (latestRequest != null) {
+                        // Update all fields of rideRequest except key
+                        rideRequest.setAccepted(latestRequest.isAccepted());
+                        rideRequest.setCreatorid(latestRequest.getCreatorid());
+                        rideRequest.setDriverid(latestRequest.getDriverid());
+                        rideRequest.setDriverConfirm(true);
+                        rideRequest.setRiderConfirm(latestRequest.isRiderConfirm());
+                    }
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("driverConfirm", true);
+
+                    requestRef.updateChildren(updates)
+                            .addOnSuccessListener(aVoid -> {
+                                if (rideRequest.isRiderConfirm() && rideRequest.isDriverConfirm())
+                                {
+                                    String riderId = rideRequest.getCreatorid();
+                                    String driverId = rideRequest.getDriverid();
+
+                                    if (riderId != null && driverId != null)
+                                    {
+                                        DatabaseReference riderRef = firebaseDatabase.getReference("users").child(riderId);
+                                        DatabaseReference driverRef = firebaseDatabase.getReference("users").child(driverId);
+
+                                        DatabaseReference riderRequestRef = riderRef.child("created_ride_requests").child(rideRequest.getKey());
+                                        riderRequestRef.removeValue()
+                                                .addOnSuccessListener(aVoid2 -> Log.d(DEBUG_TAG, "Ride request removed from rider's created_ride_requests"))
+                                                .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to remove ride request from rider", e));
+
+                                        riderRef.child("points").get()
+                                                .addOnSuccessListener(riderSnapshot -> {
+                                                    Long riderPoints = riderSnapshot.getValue(Long.class);
+                                                    if (riderPoints != null) {
+                                                        riderRef.child("points").setValue(riderPoints - 50);
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to fetch rider points", e));
+
+                                        driverRef.child("points").get()
+                                                .addOnSuccessListener(driverSnapshot -> {
+                                                    Long driverPoints = driverSnapshot.getValue(Long.class);
+                                                    if (driverPoints != null) {
+                                                        driverRef.child("points").setValue(driverPoints + 50);
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to fetch driver points", e));
+                                    } else {
+                                        Log.e(DEBUG_TAG, "riderId or driverId is null");
+                                    }
+                                }
+
+                                Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to confirm request", Toast.LENGTH_SHORT).show();
+                                Log.e(DEBUG_TAG, "Error updating ride request", e);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(DEBUG_TAG, "Failed to fetch latest ride request", e);
+                });
+    }
+
+    public void confirmDriveOffer(int position, DriveOffer driveOffer) {
+        DatabaseReference requestRef = firebaseDatabase.getReference("ride_offers").child(driveOffer.getKey());
+
+        requestRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    DriveOffer latestRequest = snapshot.getValue(DriveOffer.class);
+                    if (latestRequest != null) {
+                        // Update all fields of rideRequest except key
+                        driveOffer.setAccepted(latestRequest.isAccepted());
+                        driveOffer.setCreatorid(latestRequest.getCreatorid());
+                        driveOffer.setRiderid(latestRequest.getRiderid());
+                        driveOffer.setDriverConfirm(true);
+                        driveOffer.setRiderConfirm(latestRequest.isRiderConfirm());
+                    }
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("driverConfirm", true);
+
+                    requestRef.updateChildren(updates)
+                            .addOnSuccessListener(aVoid -> {
+                                if (driveOffer.isRiderConfirm() && driveOffer.isDriverConfirm())
+                                {
+                                    String riderId = driveOffer.getRiderid();
+                                    String driverId = driveOffer.getCreatorid();
+
+                                    if (riderId != null && driverId != null)
+                                    {
+                                        DatabaseReference riderRef = firebaseDatabase.getReference("users").child(riderId);
+                                        DatabaseReference driverRef = firebaseDatabase.getReference("users").child(driverId);
+
+                                        DatabaseReference driverOfferRef = riderRef.child("created_ride_offers").child(driveOffer.getKey());
+                                        driverOfferRef.removeValue()
+                                                .addOnSuccessListener(aVoid2 -> Log.d(DEBUG_TAG, "Ride offer removed from rider's created_ride_offers"))
+                                                .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to remove ride offer from rider", e));
+
+                                        riderRef.child("points").get()
+                                                .addOnSuccessListener(riderSnapshot -> {
+                                                    Long riderPoints = riderSnapshot.getValue(Long.class);
+                                                    if (riderPoints != null) {
+                                                        riderRef.child("points").setValue(riderPoints - 50);
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to fetch rider points", e));
+
+                                        driverRef.child("points").get()
+                                                .addOnSuccessListener(driverSnapshot -> {
+                                                    Long driverPoints = driverSnapshot.getValue(Long.class);
+                                                    if (driverPoints != null) {
+                                                        driverRef.child("points").setValue(driverPoints + 50);
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> Log.e(DEBUG_TAG, "Failed to fetch driver points", e));
+                                    } else {
+                                        Log.e(DEBUG_TAG, "riderId or driverId is null");
+                                    }
+                                }
+
+                                Toast.makeText(this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to confirm request", Toast.LENGTH_SHORT).show();
+                                Log.e(DEBUG_TAG, "Error updating ride request", e);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(DEBUG_TAG, "Failed to fetch latest ride request", e);
+                });
     }
 }

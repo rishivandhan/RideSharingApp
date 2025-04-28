@@ -173,7 +173,7 @@ public class AcceptedRideRequestsActivity extends AppCompatActivity
     }
 
     public void confirmDriveOffer(int position, DriveOffer driveOffer) {
-        DatabaseReference requestRef = firebaseDatabase.getReference("ride_requests").child(driveOffer.getKey());
+        DatabaseReference requestRef = firebaseDatabase.getReference("ride_offers").child(driveOffer.getKey());
 
         requestRef.get()
                 .addOnSuccessListener(snapshot -> {
