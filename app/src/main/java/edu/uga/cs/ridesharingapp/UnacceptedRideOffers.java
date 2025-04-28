@@ -158,12 +158,29 @@ public class UnacceptedRideOffers extends AppCompatActivity implements EditOffer
                     .child(offer.getKey());
 
             dRef.addListenerForSingleValueEvent( new ValueEventListener() {
-                @Override
-                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getApplicationContext(), "Ride Offer Deleted", Toast.LENGTH_SHORT).show();                        }
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // First remove the ride request itself
+                    dataSnapshot.getRef().removeValue().addOnSuccessListener(aVoid -> {
+                        // After successful deletion, remove from user's created_ride_requests
+                        String creatorId = userId;
+                        if (creatorId != null && !creatorId.isEmpty()) {
+                            DatabaseReference userRequestRef = firebaseDatabase.getReference()
+                                    .child("users")
+                                    .child(creatorId)
+                                    .child("created_ride_offers")
+                                    .child(offer.getKey());
+
+                            userRequestRef.removeValue()
+                                    .addOnSuccessListener(aVoid2 -> {
+                                        Toast.makeText(getApplicationContext(), "Ride Offer Deleted", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(getApplicationContext(), "Failed to delete offer reference in user", Toast.LENGTH_SHORT).show();
+                                        Log.e(DEBUG_TAG, "Error deleting ride request reference from user", e);
+                                    });
+                        } else {
+                            Log.e(DEBUG_TAG, "Creator ID is null or empty, can't remove request from user");
+                        }
                     });
                 }
 
